@@ -10,7 +10,10 @@ import Control.Log;
 import Locations.Building;
 import Locations.Campus;
 import Locations.Floor;
+import Locations.Location;
 import Locations.Room;
+import Locations.States.LocationState;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 
 /**
@@ -19,10 +22,15 @@ import javax.swing.DefaultListModel;
  */
 public class MainWindow extends javax.swing.JFrame {
     
+    private final String STATELOCATION = "Current.state";
+    
     private DefaultListModel campusListModel;
     private DefaultListModel buildingListModel;
     private DefaultListModel floorListModel;
     private DefaultListModel roomListModel;
+    private DefaultListModel roomDisplayListModel;
+    
+    private DefaultComboBoxModel locationStates;
 
     /**
      * Creates new form MainWindow
@@ -33,8 +41,11 @@ public class MainWindow extends javax.swing.JFrame {
         buildingListModel = new DefaultListModel();
         floorListModel = new DefaultListModel();
         roomListModel = new DefaultListModel();
+        roomDisplayListModel = new DefaultListModel();
         
-        Data data = Data.LoadState("Current.state");
+        locationStates = new DefaultComboBoxModel();
+        
+        Data.LoadState(STATELOCATION);
         
         RefreshCampusListModel();
         
@@ -58,96 +69,147 @@ public class MainWindow extends javax.swing.JFrame {
         lstBuildings = new javax.swing.JList<>();
         jScrollPane4 = new javax.swing.JScrollPane();
         lstFloors = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
+        btnSaveAll = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        lstLog = new javax.swing.JList<>();
+        jLabel1 = new javax.swing.JLabel();
+        cbxState = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        lstRooms.setModel(roomListModel);
+        lstRooms.setModel(roomDisplayListModel);
+        lstRooms.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lstRoomsMouseReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(lstRooms);
 
         lstCampuses.setModel(campusListModel);
         lstCampuses.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstCampusesMouseClicked(evt);
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lstCampusesMouseReleased(evt);
             }
         });
         jScrollPane2.setViewportView(lstCampuses);
 
         lstBuildings.setModel(buildingListModel);
         lstBuildings.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstBuildingsMouseClicked(evt);
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lstBuildingsMouseReleased(evt);
             }
         });
         jScrollPane3.setViewportView(lstBuildings);
 
         lstFloors.setModel(floorListModel);
         lstFloors.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lstFloorsMouseClicked(evt);
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lstFloorsMouseReleased(evt);
             }
         });
         jScrollPane4.setViewportView(lstFloors);
 
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSaveAll.setText("Save All Data");
+        btnSaveAll.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSaveAllActionPerformed(evt);
             }
         });
+
+        lstLog.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        lstLog.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstLogMouseClicked(evt);
+            }
+        });
+        jScrollPane5.setViewportView(lstLog);
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setText("Current mode:");
+
+        cbxState.setModel(locationStates);
+        cbxState.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSaveAll))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                        .addGap(44, 44, 44)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(52, 52, 52))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(54, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(377, 377, 377)
-                .addComponent(jButton1)
-                .addGap(29, 29, 29))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane4)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(276, 276, 276)
+                .addComponent(btnSaveAll)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void lstCampusesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseClicked
-        RefreshBuildingListViewModel();
-    }//GEN-LAST:event_lstCampusesMouseClicked
+    private void btnSaveAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveAllActionPerformed
+        Data.SaveState(STATELOCATION, Data.allCampuses, Data.allKeycards);
+    }//GEN-LAST:event_btnSaveAllActionPerformed
 
-    private void lstBuildingsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBuildingsMouseClicked
+    private void lstLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLogMouseClicked
+        DeselectLogItem();
+    }//GEN-LAST:event_lstLogMouseClicked
+
+    private void lstBuildingsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBuildingsMouseReleased
+        UpdateStateDropdown();
         RefreshFloorListViewModel();
-    }//GEN-LAST:event_lstBuildingsMouseClicked
+    }//GEN-LAST:event_lstBuildingsMouseReleased
 
-    private void lstFloorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseClicked
+    private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
+        UpdateStateDropdown();
         RefreshRoomListViewModel();
-    }//GEN-LAST:event_lstFloorsMouseClicked
+    }//GEN-LAST:event_lstFloorsMouseReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Data.SaveState("Current.state", Data.allCampuses, Data.allKeycards);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
+        UpdateStateDropdown();
+        RefreshBuildingListViewModel();
+    }//GEN-LAST:event_lstCampusesMouseReleased
+
+    private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
+        UpdateStateDropdown();
+    }//GEN-LAST:event_lstRoomsMouseReleased
 
     /**
      * @param args the command line arguments
@@ -185,19 +247,27 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSaveAll;
+    private javax.swing.JComboBox<String> cbxState;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JList<String> lstBuildings;
     private javax.swing.JList<String> lstCampuses;
     private javax.swing.JList<String> lstFloors;
+    private javax.swing.JList<String> lstLog;
     private javax.swing.JList<String> lstRooms;
     // End of variables declaration//GEN-END:variables
 
     private void RefreshCampusListModel() {
         campusListModel.clear();
+        buildingListModel.clear();
+        floorListModel.clear();
+        roomDisplayListModel.clear();
+        
         Data.allCampuses.values().forEach((campus) -> {
             campusListModel.addElement(campus.GetName());
         });
@@ -205,36 +275,82 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void RefreshBuildingListViewModel() {
         buildingListModel.clear();
+        floorListModel.clear();
+        roomDisplayListModel.clear();
+        
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
         
         for(Building building : selectedCampus.GetAllChildren()){
             buildingListModel.addElement(building.GetName());
         }
-        
-        lstFloors.clearSelection();
-        lstRooms.clearSelection();
     }
 
     private void RefreshFloorListViewModel() {
         floorListModel.clear();
+        roomDisplayListModel.clear();
+        
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
         Building selectedBuilding = selectedCampus.GetChild(lstBuildings.getSelectedValue());
         
         for(Floor floor : selectedBuilding.GetAllChildren()){
             floorListModel.addElement(floor.GetFloorNumber());
-        }        
-        
-        lstRooms.clearSelection();
+        }
     }
 
     private void RefreshRoomListViewModel() {
         roomListModel.clear();
+        roomDisplayListModel.clear();
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
         Building selectedBuilding = selectedCampus.GetChild(lstBuildings.getSelectedValue());
         Floor selectedFloor = selectedBuilding.GetChild(lstFloors.getSelectedValue());
         
         for(Room room : selectedFloor.GetAllChildren()){
-            roomListModel.addElement(selectedFloor.GetFloorNumber() + room.GetNumber() + " (" + room.GetRoomType() + ")");
+            roomDisplayListModel.addElement(selectedFloor.GetFloorNumber() + room.GetNumber() + " (" + room.GetRoomType() + ")");
+            roomListModel.addElement(room.GetNumber());
+        }
+    }
+
+    private void DeselectLogItem() {
+        lstLog.clearSelection();
+    }
+
+    private void UpdateStateDropdown() {
+        cbxState.setEnabled(true);
+        
+        Location currentLocation;
+        
+        currentLocation = Data.allCampuses.get(lstCampuses.getSelectedValue());
+        
+        if (lstBuildings.getSelectedValue() != null)
+            currentLocation = ((Campus)currentLocation).GetChild(lstBuildings.getSelectedValue());
+        
+        if (lstFloors.getSelectedValue() != null)
+            currentLocation = ((Building)currentLocation).GetChild(lstFloors.getSelectedValue());
+        
+        if (lstRooms.getSelectedValue() != null)
+            currentLocation = ((Floor)currentLocation).GetChild((String)roomListModel.getElementAt(lstRooms.getSelectedIndex()));
+        
+        boolean changed = false;
+        for (int i = 0; i < locationStates.getSize(); i++) {
+            if (locationStates.getElementAt(i) == currentLocation.GetState().GetName()){
+                cbxState.getModel().setSelectedItem(currentLocation.GetState().GetName());
+                changed = true;
+            }
+        }
+        
+        if (!changed){
+            UpdateLocationStates();        
+            for (int i = 0; i < locationStates.getSize(); i++) {
+                if (locationStates.getElementAt(i) == currentLocation.GetState().GetName())
+                    cbxState.getModel().setSelectedItem(currentLocation.GetState().GetName());
+            }
+        }
+    }
+
+    private void UpdateLocationStates() {
+        locationStates.removeAllElements();
+        for (LocationState state : LocationState.values()) {
+            locationStates.addElement(state.GetName());
         }
     }
 }
