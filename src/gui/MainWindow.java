@@ -7,11 +7,13 @@ package gui;
 
 import Control.Data;
 import Control.Log;
+import Listeners.ILogObserver;
 import Locations.Building;
 import Locations.Campus;
 import Locations.Floor;
 import Locations.Location;
 import Locations.Room;
+import Locations.RoomType;
 import Locations.States.LocationState;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -20,7 +22,7 @@ import javax.swing.DefaultListModel;
  *
  * @author Student
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     
     private final String STATELOCATION = "Current.state";
     
@@ -30,7 +32,10 @@ public class MainWindow extends javax.swing.JFrame {
     private DefaultListModel roomListModel;
     private DefaultListModel roomDisplayListModel;
     
+    private DefaultListModel logListModel;
+    
     private DefaultComboBoxModel locationStates;
+    private Location selectedLocation;
 
     /**
      * Creates new form MainWindow
@@ -43,9 +48,14 @@ public class MainWindow extends javax.swing.JFrame {
         roomListModel = new DefaultListModel();
         roomDisplayListModel = new DefaultListModel();
         
+        logListModel = new DefaultListModel();
+        
         locationStates = new DefaultComboBoxModel();
         
+        Log.Logger().AddLogObserver(this);
         Data.LoadState(STATELOCATION);
+        
+        UpdateLocationStates(); 
         
         RefreshCampusListModel();
         
@@ -74,6 +84,8 @@ public class MainWindow extends javax.swing.JFrame {
         lstLog = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
         cbxState = new javax.swing.JComboBox<>();
+        btnAddLocation = new javax.swing.JButton();
+        btnUpdateMode = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,11 +128,8 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        lstLog.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        lstLog.setFont(new java.awt.Font("Courier New", 0, 11)); // NOI18N
+        lstLog.setModel(logListModel);
         lstLog.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lstLogMouseClicked(evt);
@@ -133,6 +142,27 @@ public class MainWindow extends javax.swing.JFrame {
 
         cbxState.setModel(locationStates);
         cbxState.setEnabled(false);
+        cbxState.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxStateActionPerformed(evt);
+            }
+        });
+
+        btnAddLocation.setText("Add Child Location");
+        btnAddLocation.setEnabled(false);
+        btnAddLocation.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddLocationActionPerformed(evt);
+            }
+        });
+
+        btnUpdateMode.setText("Update");
+        btnUpdateMode.setEnabled(false);
+        btnUpdateMode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateModeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,29 +172,31 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSaveAll))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(18, 18, 18)
-                                .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSaveAll))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnUpdateMode)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAddLocation)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(54, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane3)
                     .addComponent(jScrollPane4)
@@ -173,11 +205,13 @@ public class MainWindow extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(276, 276, 276)
+                    .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAddLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdateMode, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(309, 309, 309)
                 .addComponent(btnSaveAll)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -193,23 +227,39 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_lstLogMouseClicked
 
     private void lstBuildingsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBuildingsMouseReleased
+        SetLocationToBuilding();
         UpdateStateDropdown();
-        RefreshFloorListViewModel();
+        RefreshFloorListModel();
     }//GEN-LAST:event_lstBuildingsMouseReleased
 
     private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
+        SetLocationToFloor();
         UpdateStateDropdown();
-        RefreshRoomListViewModel();
+        RefreshRoomListModel();
     }//GEN-LAST:event_lstFloorsMouseReleased
 
     private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
+        SetLocationToCampus();
         UpdateStateDropdown();
-        RefreshBuildingListViewModel();
+        RefreshBuildingListModel();
     }//GEN-LAST:event_lstCampusesMouseReleased
 
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
+        SetLocationtoRoom();
         UpdateStateDropdown();
     }//GEN-LAST:event_lstRoomsMouseReleased
+
+    private void cbxStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxStateActionPerformed
+        
+    }//GEN-LAST:event_cbxStateActionPerformed
+
+    private void btnAddLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLocationActionPerformed
+        NewChildLocation();
+    }//GEN-LAST:event_btnAddLocationActionPerformed
+
+    private void btnUpdateModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateModeActionPerformed
+        UpdateCurrentState();
+    }//GEN-LAST:event_btnUpdateModeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -247,7 +297,9 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddLocation;
     private javax.swing.JButton btnSaveAll;
+    private javax.swing.JButton btnUpdateMode;
     private javax.swing.JComboBox<String> cbxState;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -262,10 +314,19 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JList<String> lstRooms;
     // End of variables declaration//GEN-END:variables
 
+    @Override
+    public void ObservedStateUpdate(String message) {
+        logListModel.addElement(message);
+        if (logListModel.getSize() == 6)
+            logListModel.remove(0);
+    }
+    
+    
     private void RefreshCampusListModel() {
         campusListModel.clear();
         buildingListModel.clear();
         floorListModel.clear();
+        roomListModel.clear();
         roomDisplayListModel.clear();
         
         Data.allCampuses.values().forEach((campus) -> {
@@ -273,9 +334,10 @@ public class MainWindow extends javax.swing.JFrame {
         });
     }
 
-    private void RefreshBuildingListViewModel() {
+    private void RefreshBuildingListModel() {
         buildingListModel.clear();
         floorListModel.clear();
+        roomListModel.clear();
         roomDisplayListModel.clear();
         
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
@@ -285,8 +347,9 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
 
-    private void RefreshFloorListViewModel() {
+    private void RefreshFloorListModel() {
         floorListModel.clear();
+        roomListModel.clear();
         roomDisplayListModel.clear();
         
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
@@ -297,7 +360,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }
 
-    private void RefreshRoomListViewModel() {
+    private void RefreshRoomListModel() {
         roomListModel.clear();
         roomDisplayListModel.clear();
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
@@ -315,42 +378,71 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     private void UpdateStateDropdown() {
-        cbxState.setEnabled(true);
-        
-        Location currentLocation;
-        
-        currentLocation = Data.allCampuses.get(lstCampuses.getSelectedValue());
-        
-        if (lstBuildings.getSelectedValue() != null)
-            currentLocation = ((Campus)currentLocation).GetChild(lstBuildings.getSelectedValue());
-        
-        if (lstFloors.getSelectedValue() != null)
-            currentLocation = ((Building)currentLocation).GetChild(lstFloors.getSelectedValue());
-        
-        if (lstRooms.getSelectedValue() != null)
-            currentLocation = ((Floor)currentLocation).GetChild((String)roomListModel.getElementAt(lstRooms.getSelectedIndex()));
-        
-        boolean changed = false;
+        EnableControls();
         for (int i = 0; i < locationStates.getSize(); i++) {
-            if (locationStates.getElementAt(i) == currentLocation.GetState().GetName()){
-                cbxState.getModel().setSelectedItem(currentLocation.GetState().GetName());
-                changed = true;
+            if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName()){
+                cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
             }
         }
-        
-        if (!changed){
-            UpdateLocationStates();        
-            for (int i = 0; i < locationStates.getSize(); i++) {
-                if (locationStates.getElementAt(i) == currentLocation.GetState().GetName())
-                    cbxState.getModel().setSelectedItem(currentLocation.GetState().GetName());
-            }
-        }
+    }
+
+    private void EnableControls() {
+        cbxState.setEnabled(true);
+        btnUpdateMode.setEnabled(true);
+        btnAddLocation.setEnabled(true);
     }
 
     private void UpdateLocationStates() {
         locationStates.removeAllElements();
         for (LocationState state : LocationState.values()) {
             locationStates.addElement(state.GetName());
+        }
+    }
+
+    private void SetLocationToCampus() {
+        selectedLocation = Data.allCampuses.get(lstCampuses.getSelectedValue());
+    }
+
+    private void SetLocationToBuilding() {
+        SetLocationToCampus();
+        selectedLocation = ((Campus)selectedLocation).GetChild(lstBuildings.getSelectedValue());
+    }
+
+    private void SetLocationToFloor() {
+        SetLocationToBuilding();
+        selectedLocation = ((Building)selectedLocation).GetChild(lstFloors.getSelectedValue());
+    }
+
+    private void SetLocationtoRoom() {
+        SetLocationToFloor();
+        selectedLocation = ((Floor)selectedLocation).GetChild((String)roomListModel.getElementAt(lstRooms.getSelectedIndex()));
+    }
+
+    private void UpdateCurrentState() {
+        selectedLocation.SetRoomState(LocationState.values()[cbxState.getSelectedIndex()]);
+    }
+
+    private void NewChildLocation() {
+        if (selectedLocation instanceof Campus){
+            NewBuilding box = new NewBuilding(this, true);
+            box.setVisible(true);
+            if(box.WasCreatePressed()){
+                Log.Log("Yes");
+                ((Campus)selectedLocation).AddBuilding(box.GetName(), box.GetShortcode());
+                RefreshBuildingListModel();
+            }
+        } else if (selectedLocation instanceof Building){
+            ((Building)selectedLocation).AddFloor();
+            RefreshFloorListModel();
+        } else if (selectedLocation instanceof Floor){
+            NewRoom box = new NewRoom(this, true);
+            box.setVisible(true);
+            if(box.WasCreatePressed()){
+                ((Floor)selectedLocation).AddRoom(box.GetType());
+                RefreshRoomListModel();
+            }
+        } else {
+            
         }
     }
 }
