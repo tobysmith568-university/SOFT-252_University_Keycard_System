@@ -13,10 +13,10 @@ import Locations.Campus;
 import Locations.Floor;
 import Locations.Location;
 import Locations.Room;
-import Locations.RoomType;
 import Locations.States.LocationState;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -60,6 +60,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         RefreshCampusListModel();
         
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -86,8 +87,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         cbxState = new javax.swing.JComboBox<>();
         btnAddLocation = new javax.swing.JButton();
         btnUpdateMode = new javax.swing.JButton();
+        btnAddCampus = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Keycard System");
 
         lstRooms.setModel(roomDisplayListModel);
         lstRooms.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -164,6 +168,21 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             }
         });
 
+        btnAddCampus.setText("Add New Campus");
+        btnAddCampus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddCampusActionPerformed(evt);
+            }
+        });
+
+        jButton1.setForeground(new java.awt.Color(255, 0, 0));
+        jButton1.setText("Delete Location");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -172,25 +191,34 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnSaveAll))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnUpdateMode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddLocation)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUpdateMode)
+                                .addGap(332, 332, 332))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnAddCampus)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAddLocation)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -203,11 +231,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                     .addComponent(jScrollPane1)
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAddLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnUpdateMode, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnUpdateMode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddCampus, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(309, 309, 309)
                 .addComponent(btnSaveAll)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -230,23 +261,27 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         SetLocationToBuilding();
         UpdateStateDropdown();
         RefreshFloorListModel();
+        EnableControls();
     }//GEN-LAST:event_lstBuildingsMouseReleased
 
     private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
         SetLocationToFloor();
         UpdateStateDropdown();
         RefreshRoomListModel();
+        EnableControls();
     }//GEN-LAST:event_lstFloorsMouseReleased
 
     private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
         SetLocationToCampus();
         UpdateStateDropdown();
         RefreshBuildingListModel();
+        EnableControls();
     }//GEN-LAST:event_lstCampusesMouseReleased
 
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
         SetLocationtoRoom();
         UpdateStateDropdown();
+        DisableChildControls();
     }//GEN-LAST:event_lstRoomsMouseReleased
 
     private void cbxStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxStateActionPerformed
@@ -260,6 +295,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private void btnUpdateModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateModeActionPerformed
         UpdateCurrentState();
     }//GEN-LAST:event_btnUpdateModeActionPerformed
+
+    private void btnAddCampusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCampusActionPerformed
+        NewCampusLocation();
+    }//GEN-LAST:event_btnAddCampusActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        DeleteLocation();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -297,10 +340,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddCampus;
     private javax.swing.JButton btnAddLocation;
     private javax.swing.JButton btnSaveAll;
     private javax.swing.JButton btnUpdateMode;
     private javax.swing.JComboBox<String> cbxState;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -378,7 +423,6 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateStateDropdown() {
-        EnableControls();
         for (int i = 0; i < locationStates.getSize(); i++) {
             if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName()){
                 cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
@@ -390,6 +434,10 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         cbxState.setEnabled(true);
         btnUpdateMode.setEnabled(true);
         btnAddLocation.setEnabled(true);
+    }
+
+    private void DisableChildControls() {
+        btnAddLocation.setEnabled(false);
     }
 
     private void UpdateLocationStates() {
@@ -424,25 +472,78 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
 
     private void NewChildLocation() {
         if (selectedLocation instanceof Campus){
-            NewBuilding box = new NewBuilding(this, true);
-            box.setVisible(true);
-            if(box.WasCreatePressed()){
-                Log.Log("Yes");
-                ((Campus)selectedLocation).AddBuilding(box.GetName(), box.GetShortcode());
+            NewBuilding dialog = new NewBuilding(this, true);
+            dialog.setVisible(true);
+            if(dialog.WasCreatePressed()){
+                ((Campus)selectedLocation).AddBuilding(dialog.GetName(), dialog.GetShortcode());
                 RefreshBuildingListModel();
             }
         } else if (selectedLocation instanceof Building){
             ((Building)selectedLocation).AddFloor();
             RefreshFloorListModel();
         } else if (selectedLocation instanceof Floor){
-            NewRoom box = new NewRoom(this, true);
-            box.setVisible(true);
-            if(box.WasCreatePressed()){
-                ((Floor)selectedLocation).AddRoom(box.GetType());
+            NewRoom dialog = new NewRoom(this, true);
+            dialog.setVisible(true);
+            if(dialog.WasCreatePressed()){
+                ((Floor)selectedLocation).AddRoom(dialog.GetType());
                 RefreshRoomListModel();
             }
         } else {
             
+        }
+    }
+
+    private void NewCampusLocation() {
+        NewCampus dialog = new NewCampus(this, true);
+        dialog.setVisible(true);
+        if(dialog.WasCreatePressed()){
+            Data.allCampuses.put(dialog.GetName(), new Campus(dialog.GetName()));
+            RefreshCampusListModel();
+        }
+    }
+
+    private void DeleteLocation() {
+        String message = "Are you really sure you want to perminantly delete this location?"
+                                    + "\nIt will not be recoverable";        
+        if (selectedLocation instanceof Floor || selectedLocation instanceof Room)
+            message += " and removing it may cause numbered locations to have un-fillable gaps!";
+        else
+            message += "!";
+        
+        String[] options = {"Yes, Delete It", "No, Save It"};
+        switch (JOptionPane.showOptionDialog(this,
+                            message,
+                            "Delete this location?",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE,
+                            null,
+                            options,
+                            options[1])){
+            default:
+                break;
+            case 0:
+                if (selectedLocation instanceof Campus){
+                    Data.allCampuses.remove(((Campus)selectedLocation).GetName());
+                    RefreshCampusListModel();
+                    selectedLocation = null;
+                } else if (selectedLocation instanceof Building){
+                    Campus parent = ((Building)selectedLocation).GetCampus();
+                    parent.RemoveBuilding((Building)selectedLocation);
+                    RefreshBuildingListModel();
+                    selectedLocation = ((Building)selectedLocation).GetCampus();
+                } else if (selectedLocation instanceof Floor){
+                    Building parent = ((Floor)selectedLocation).GetBuilding();
+                    parent.RemoveFloor((Floor)selectedLocation);
+                    RefreshFloorListModel();
+                    selectedLocation = ((Floor)selectedLocation).GetBuilding();
+                } else {
+                    Floor parent = ((Room)selectedLocation).GetFloor();
+                    parent.RemoveRoom((Room)selectedLocation);
+                    RefreshRoomListModel();
+                    selectedLocation = ((Room)selectedLocation).GetFloor();
+                    EnableControls();
+                }
+                break;
         }
     }
 }

@@ -6,32 +6,20 @@
 package gui;
 
 import Locations.RoomType;
-import Locations.States.LocationState;
-import java.awt.event.KeyEvent;
-import javax.swing.DefaultComboBoxModel;
 
 /**
  *
- * @author Student
+ * @author Toby
  */
-public class NewRoom extends javax.swing.JDialog {
+public class NewCampus extends javax.swing.JDialog {
     
     private boolean createPressed = false;
 
-    DefaultComboBoxModel roomTypes;
-            
     /**
-     * Creates new form NewRoom
+     * Creates new form NewCampus
      */
-    public NewRoom(java.awt.Frame parent, boolean modal) {
+    public NewCampus(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        roomTypes = new DefaultComboBoxModel();
-        
-        for (RoomType type : RoomType.values()) {
-            roomTypes.addElement(type.GetName());
-        }
-        
-        
         initComponents();
         setLocationRelativeTo(parent);
     }
@@ -45,23 +33,37 @@ public class NewRoom extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        cbxOptions = new javax.swing.JComboBox<>();
         btnCreate = new javax.swing.JButton();
+        tbxName = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Create New Room");
+        setTitle("Create New Campus");
         setResizable(false);
-
-        cbxOptions.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        cbxOptions.setModel(roomTypes);
 
         btnCreate.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnCreate.setText("Create");
+        btnCreate.setEnabled(false);
         btnCreate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateActionPerformed(evt);
             }
         });
+
+        tbxName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tbxName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tbxNameActionPerformed(evt);
+            }
+        });
+        tbxName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbxNameKeyReleased(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setText("Name:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -69,19 +71,24 @@ public class NewRoom extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cbxOptions, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(btnCreate)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(tbxName, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnCreate)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(cbxOptions)
-                    .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tbxName, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCreate))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -90,6 +97,14 @@ public class NewRoom extends javax.swing.JDialog {
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         Create();
     }//GEN-LAST:event_btnCreateActionPerformed
+
+    private void tbxNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxNameKeyReleased
+        ButtonState();
+    }//GEN-LAST:event_tbxNameKeyReleased
+
+    private void tbxNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbxNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tbxNameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -108,20 +123,20 @@ public class NewRoom extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewRoom.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewCampus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewRoom.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewCampus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewRoom.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewCampus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewRoom.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(NewCampus.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                NewRoom dialog = new NewRoom(new javax.swing.JFrame(), true);
+                NewCampus dialog = new NewCampus(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -135,19 +150,25 @@ public class NewRoom extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreate;
-    private javax.swing.JComboBox<String> cbxOptions;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField tbxName;
     // End of variables declaration//GEN-END:variables
-
+    
+    private void ButtonState() {
+        btnCreate.setEnabled(!tbxName.getText().isEmpty());
+    }
+    
     public boolean WasCreatePressed(){
         return createPressed;
     }
     
-    public RoomType GetType(){
-        return RoomType.values()[cbxOptions.getSelectedIndex()];
+    public String GetName(){
+        return tbxName.getText();
     }
 
     private void Create() {
         createPressed = true;
         dispose();
     }
+
 }

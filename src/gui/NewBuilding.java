@@ -7,7 +7,7 @@ package gui;
 
 /**
  *
- * @author Toby
+ * @author Student
  */
 public class NewBuilding extends javax.swing.JDialog {
     
@@ -19,6 +19,7 @@ public class NewBuilding extends javax.swing.JDialog {
     public NewBuilding(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(parent);
     }
 
     /**
@@ -30,18 +31,20 @@ public class NewBuilding extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtName = new javax.swing.JTextField();
+        tbxName = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtShortcode = new javax.swing.JTextField();
+        tbxShortcode = new javax.swing.JTextField();
         btnCreate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Create New Building");
+        setResizable(false);
 
-        txtName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txtName.addKeyListener(new java.awt.event.KeyAdapter() {
+        tbxName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tbxName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtNameKeyReleased(evt);
+                tbxNameKeyReleased(evt);
             }
         });
 
@@ -53,10 +56,10 @@ public class NewBuilding extends javax.swing.JDialog {
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel2.setText("Shortcode:");
 
-        txtShortcode.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        txtShortcode.addKeyListener(new java.awt.event.KeyAdapter() {
+        tbxShortcode.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tbxShortcode.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtShortcodeKeyReleased(evt);
+                tbxShortcodeKeyReleased(evt);
             }
         });
 
@@ -81,10 +84,10 @@ public class NewBuilding extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtShortcode, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tbxShortcode, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tbxName, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -93,12 +96,12 @@ public class NewBuilding extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
+                    .addComponent(tbxName, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtShortcode, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tbxShortcode, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnCreate)))
                 .addContainerGap())
         );
@@ -106,17 +109,16 @@ public class NewBuilding extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNameKeyReleased
+    private void tbxNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxNameKeyReleased
         ButtonState();
-    }//GEN-LAST:event_txtNameKeyReleased
+    }//GEN-LAST:event_tbxNameKeyReleased
 
-    private void txtShortcodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtShortcodeKeyReleased
+    private void tbxShortcodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxShortcodeKeyReleased
         ButtonState();
-    }//GEN-LAST:event_txtShortcodeKeyReleased
+    }//GEN-LAST:event_tbxShortcodeKeyReleased
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        createPressed = true;
-        dispose();
+        Create();
     }//GEN-LAST:event_btnCreateActionPerformed
 
     /**
@@ -165,12 +167,12 @@ public class NewBuilding extends javax.swing.JDialog {
     private javax.swing.JButton btnCreate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField txtName;
-    private javax.swing.JTextField txtShortcode;
+    private javax.swing.JTextField tbxName;
+    private javax.swing.JTextField tbxShortcode;
     // End of variables declaration//GEN-END:variables
 
     private void ButtonState() {
-        btnCreate.setEnabled(!txtName.getText().isEmpty() && !txtShortcode.getText().isEmpty());
+        btnCreate.setEnabled(!tbxName.getText().isEmpty() && !tbxShortcode.getText().isEmpty());
     }
     
     public boolean WasCreatePressed(){
@@ -178,10 +180,15 @@ public class NewBuilding extends javax.swing.JDialog {
     }
     
     public String GetName(){
-        return txtName.getText();
+        return tbxName.getText();
     }
     
     public String GetShortcode(){
-        return txtShortcode.getText();
+        return tbxShortcode.getText();
+    }
+
+    private void Create() {
+        createPressed = true;
+        dispose();
     }
 }
