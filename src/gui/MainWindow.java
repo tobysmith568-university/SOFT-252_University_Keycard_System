@@ -14,9 +14,12 @@ import Locations.Floor;
 import Locations.Location;
 import Locations.Room;
 import Locations.States.LocationState;
+import java.awt.Component;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
 
 /**
  *
@@ -41,6 +44,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
      * Creates new form MainWindow
      */
     public MainWindow() {
+        Component thisFrame = this;
         
         campusListModel = new DefaultListModel();
         buildingListModel = new DefaultListModel();
@@ -58,6 +62,27 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         UpdateLocationStates(); 
         
         RefreshCampusListModel();
+        
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                switch (JOptionPane.showConfirmDialog(thisFrame, 
+                                    "Would you like to save all data before exiting?",
+                                    "Save?", JOptionPane.YES_NO_CANCEL_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE)){
+                    case JOptionPane.YES_OPTION:
+                        Data.SaveState(STATELOCATION, Data.allCampuses, Data.allKeycards);
+                        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        break;
+                    case JOptionPane.CANCEL_OPTION:
+                        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+                        break;
+                    case JOptionPane.NO_OPTION:
+                        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        break;                        
+                }
+            }
+        });
         
         initComponents();
         setLocationRelativeTo(null);
@@ -146,11 +171,6 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
 
         cbxState.setModel(locationStates);
         cbxState.setEnabled(false);
-        cbxState.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbxStateActionPerformed(evt);
-            }
-        });
 
         btnAddLocation.setText("Add Child Location");
         btnAddLocation.setEnabled(false);
@@ -284,10 +304,6 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         DisableChildControls();
     }//GEN-LAST:event_lstRoomsMouseReleased
 
-    private void cbxStateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxStateActionPerformed
-        
-    }//GEN-LAST:event_cbxStateActionPerformed
-
     private void btnAddLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLocationActionPerformed
         NewChildLocation();
     }//GEN-LAST:event_btnAddLocationActionPerformed
@@ -358,7 +374,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private javax.swing.JList<String> lstLog;
     private javax.swing.JList<String> lstRooms;
     // End of variables declaration//GEN-END:variables
-
+    
     @Override
     public void ObservedStateUpdate(String message) {
         logListModel.addElement(message);
