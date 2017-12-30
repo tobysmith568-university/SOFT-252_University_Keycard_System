@@ -82,11 +82,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         
         AddClosingWarning();
         
-        GenerateUserFilterMenu();
-        PopulateUsers();
-        
         initComponents();
-        setLocationRelativeTo(null);      
+        setLocationRelativeTo(null);
+        
+        GenerateUserFilterMenu();
+        PopulateUsers();     
     }
 
     /**
@@ -121,6 +121,8 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         btnAddUser = new javax.swing.JButton();
         btnDeleteUser = new javax.swing.JButton();
         btnEditUser = new javax.swing.JButton();
+        btnSimulate = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Keycard System");
@@ -244,6 +246,26 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
 
         btnEditUser.setText("Edit User");
         btnEditUser.setEnabled(false);
+        btnEditUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditUserActionPerformed(evt);
+            }
+        });
+
+        btnSimulate.setText("Simulate in Room");
+        btnSimulate.setEnabled(false);
+        btnSimulate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimulateActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("View Today's Full Log");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -284,8 +306,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                             .addComponent(btnAddUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnDeleteUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnEditUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnEditUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSaveAll)))
                 .addContainerGap())
         );
@@ -316,11 +341,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEditUser)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSimulate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDeleteUser)
-                            .addComponent(btnSaveAll)))
+                            .addComponent(btnSaveAll)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -341,6 +369,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         UpdateStateDropdown();
         RefreshFloorListModel();
         EnableLocationControls();
+        SetSimulate();
     }//GEN-LAST:event_lstBuildingsMouseReleased
 
     private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
@@ -348,6 +377,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         UpdateStateDropdown();
         RefreshRoomListModel();
         EnableLocationControls();
+        SetSimulate();
     }//GEN-LAST:event_lstFloorsMouseReleased
 
     private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
@@ -355,12 +385,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         UpdateStateDropdown();
         RefreshBuildingListModel();
         EnableLocationControls();
+        SetSimulate();
     }//GEN-LAST:event_lstCampusesMouseReleased
 
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
         SetLocationtoRoom();
         UpdateStateDropdown();
         DisableChildControls();
+        SetSimulate();
     }//GEN-LAST:event_lstRoomsMouseReleased
 
     private void btnAddLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLocationActionPerformed
@@ -392,8 +424,21 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }//GEN-LAST:event_btnDeleteUserActionPerformed
 
     private void lstUsersMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstUsersMouseReleased
-        EnableUserControls();
+        SetUserControls(true);
+        SetSimulate();
     }//GEN-LAST:event_lstUsersMouseReleased
+
+    private void btnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUserActionPerformed
+        EditSelectedUser();
+    }//GEN-LAST:event_btnEditUserActionPerformed
+
+    private void btnSimulateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimulateActionPerformed
+        SimulateUser();
+    }//GEN-LAST:event_btnSimulateActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        OpenTodaysLog();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -437,8 +482,10 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private javax.swing.JButton btnEditUser;
     private javax.swing.JButton btnMenu;
     private javax.swing.JButton btnSaveAll;
+    private javax.swing.JButton btnSimulate;
     private javax.swing.JButton btnUpdateMode;
     private javax.swing.JComboBox<String> cbxState;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -606,11 +653,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         else
             message += "!";
         
-        String[] options = {"Yes, Delete It", "No, Save It"};
+        String[] options = {"Yes, Delete It", "No, Save It", "Cancel"};
         switch (JOptionPane.showOptionDialog(this,
                             message,
                             "Delete this location?",
-                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.YES_NO_CANCEL_OPTION,
                             JOptionPane.WARNING_MESSAGE,
                             null,
                             options,
@@ -684,6 +731,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void PopulateUsers() {
+        SetUserControls(false);
         usersListModel.clear();
         usersDisplayListModel.clear();
         Component[] checkboxes = userFilterMenu.getComponents();
@@ -696,10 +744,13 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 .filter((keycard) -> (enabledRoles.contains(keycard.GetRole())))
                 .sorted(Comparator.comparing(Keycard::GetName));
         
-        wantedKeycards.forEachOrdered((keycard) -> {
-            usersListModel.addElement(keycard);
-            usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRole().GetName() + ")");
-        });        
+            Data.allKeycards.values().stream()
+                .filter((keycard) -> (enabledRoles.contains(keycard.GetRole())))
+                .sorted(Comparator.comparing(Keycard::GetName))
+                .forEachOrdered((keycard) -> {
+                    usersListModel.addElement(keycard);
+                    usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRole().GetName() + ")");
+                });       
     }
 
     private void AddNewUser() {
@@ -714,11 +765,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private void DeleteSelectedUser() {
         String message = "Are you really sure you want to perminantly delete this user?"
                                     + "\nThey will not be recoverable!";
-        String[] options = {"Yes, Delete Them", "No, Save Them"};
+        String[] options = {"Yes, Delete Them", "No, Save Them", "Cancel"};
         switch (JOptionPane.showOptionDialog(this,
                             message,
-                            "Delete this location?",
-                            JOptionPane.YES_NO_OPTION,
+                            "Delete this user?",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
                             JOptionPane.WARNING_MESSAGE,
                             null,
                             options,
@@ -732,8 +783,29 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         }
     }
 
-    private void EnableUserControls() {
-        btnEditUser.setEnabled(true);
-        btnDeleteUser.setEnabled(true);
+    private void SetUserControls(boolean state) {
+        btnEditUser.setEnabled(state);
+        btnDeleteUser.setEnabled(state);
+    }
+
+    private void EditSelectedUser() {
+        EditUser dialog = new EditUser(this, true, Data.allKeycards.get(lstUsers.getSelectedValue().split(":")[0]));
+        dialog.setVisible(true);
+        if(dialog.WasUpdatePressed()){
+            PopulateUsers();
+        }
+    }
+
+    private void SetSimulate() {
+        btnSimulate.setEnabled(lstUsers.getSelectedIndex() != -1 && lstRooms.getSelectedIndex() != -1);
+    }
+
+    private void SimulateUser() {
+       ((Room)selectedLocation).AccessRequest(Data.allKeycards.get(lstUsers.getSelectedValue().split(":")[0]));
+    }
+
+    private void OpenTodaysLog() {
+        ShowFullLog dialog = new ShowFullLog(this, true, Log.Logger().GetTodaysLogFile());
+        dialog.setVisible(true);
     }
 }
