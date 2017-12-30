@@ -6,8 +6,6 @@
 package gui;
 
 import Locations.RoomType;
-import Locations.States.LocationState;
-import java.awt.event.KeyEvent;
 import javax.swing.DefaultComboBoxModel;
 
 /**
