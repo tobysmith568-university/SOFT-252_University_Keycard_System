@@ -565,11 +565,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateStateDropdown() {
-        for (int i = 0; i < locationStates.getSize(); i++) {
-            if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName()){
-                cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
+        System.out.println(selectedLocation.GetState().GetIsMixedState());
+        if (selectedLocation.GetState().GetIsMixedState())
+            cbxState.setSelectedIndex(-1);
+        else
+            for (int i = 0; i < locationStates.getSize(); i++) {
+                if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName())
+                    cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
             }
-        }
     }
 
     private void EnableLocationControls() {
