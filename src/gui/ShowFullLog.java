@@ -6,11 +6,19 @@
 package gui;
 
 import Control.Log;
+import People.Keycard;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
+import java.util.Comparator;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -19,10 +27,12 @@ import javax.swing.DefaultListModel;
 public class ShowFullLog extends javax.swing.JDialog {
 
     DefaultListModel logs;
+    String[] lines;
+    String[] allLines;
     
     /**
      * Creates new form ShowFullLog
-     * @param lines
+     * @param path
      */
     public ShowFullLog(java.awt.Frame parent, boolean modal, Path path) {
         super(parent, modal);
@@ -47,7 +57,10 @@ public class ShowFullLog extends javax.swing.JDialog {
         lblTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
+        btnSaveAs = new javax.swing.JButton();
+        btnOpen = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
+        tbxSearch = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Today's Full Log");
@@ -59,8 +72,31 @@ public class ShowFullLog extends javax.swing.JDialog {
         jList1.setModel(logs);
         jScrollPane1.setViewportView(jList1);
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jButton1.setText("jButton1");
+        btnSaveAs.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnSaveAs.setText("Save As...");
+        btnSaveAs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveAsActionPerformed(evt);
+            }
+        });
+
+        btnOpen.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnOpen.setText("Open...");
+        btnOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOpenActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        tbxSearch.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -69,27 +105,51 @@ public class ShowFullLog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 918, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnOpen)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSaveAs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblTitle)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 404, Short.MAX_VALUE)
+                        .addComponent(tbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblTitle)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSaveAs, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(tbxSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveAsActionPerformed
+        ExportLog();
+    }//GEN-LAST:event_btnSaveAsActionPerformed
+
+    private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
+        LoadData(SelectPath());
+    }//GEN-LAST:event_btnOpenActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        Search();
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -134,24 +194,71 @@ public class ShowFullLog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnOpen;
+    private javax.swing.JButton btnSaveAs;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblTitle;
+    private javax.swing.JTextField tbxSearch;
     // End of variables declaration//GEN-END:variables
 
     private void LoadData(Path path) {
+        if (path == null)
+            return;
         lblTitle.setText(path.getFileName().toString().replace('-', '/').split("\\.")[0]);
         
         if (!Files.exists(path) || !Files.isReadable(path))
             Log.Log("ERROR: Problem accessing file");
         else
-            try {            
-                for (String line : Files.readAllLines(path)) {
-                    logs.addElement(line);
-                }
+            try {
+                Display(allLines = Files.readAllLines(path).toArray(new String[0]));
             } catch (IOException e) {
                 Log.Log(e.getMessage());
             }
+    }
+
+    private void ExportLog() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter(".log file", "log"));
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().toString() + ".log");
+            
+            try {
+                Files.write(file.toPath(), Arrays.asList(lines), Files.exists(file.toPath()) ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE);
+                Log.Log("Written log file to \"" + file.toPath() + "\"");
+            } catch (IOException e) {
+                    Log.Log(e.getMessage());
+            }
+        }
+    }
+
+    private Path SelectPath() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter(".log file", "log"));
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            return Paths.get(fileChooser.getSelectedFile().toString());
+        }
+        return null;
+    }
+
+    private void Search() {
+        if (tbxSearch.getText().isEmpty())
+            Display(allLines);
+        else{
+            Display(Arrays.stream(allLines)
+                .filter(line -> line.contains(tbxSearch.getText()))
+                .toArray(String[]::new));
+        }
+    }
+
+    private void Display(String[] lines) {
+        this.lines = lines;
+        logs.clear();
+        for (String line : lines) {
+            logs.addElement(line);
+        }
     }
 }

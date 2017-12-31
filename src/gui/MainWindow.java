@@ -740,17 +740,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             if (((JCheckBox)checkboxes[i]).isSelected())
                 enabledRoles.add(Role.values()[i]);
         }
-        Stream<Keycard> wantedKeycards = Data.allKeycards.values().stream()
-                .filter((keycard) -> (enabledRoles.contains(keycard.GetRole())))
-                .sorted(Comparator.comparing(Keycard::GetName));
         
-            Data.allKeycards.values().stream()
-                .filter((keycard) -> (enabledRoles.contains(keycard.GetRole())))
-                .sorted(Comparator.comparing(Keycard::GetName))
-                .forEachOrdered((keycard) -> {
-                    usersListModel.addElement(keycard);
-                    usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRole().GetName() + ")");
-                });       
+        Data.allKeycards.values().stream()
+            .filter((keycard) -> (enabledRoles.contains(keycard.GetRole())))
+            .sorted(Comparator.comparing(Keycard::GetName))
+            .forEachOrdered((keycard) -> {
+                usersListModel.addElement(keycard);
+                usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRole().GetName() + ")");
+            });       
     }
 
     private void AddNewUser() {
