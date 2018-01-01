@@ -565,8 +565,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateStateDropdown() {
-        System.out.println(selectedLocation.GetState().GetIsMixedState());
-        if (selectedLocation.GetState().GetIsMixedState())
+        if (selectedLocation.GetIsMixedState())
             cbxState.setSelectedIndex(-1);
         else
             for (int i = 0; i < locationStates.getSize(); i++) {
