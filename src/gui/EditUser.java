@@ -5,12 +5,13 @@
  */
 package gui;
 
+import Control.KeycardFactory;
 import People.Keycard;
 import People.Role;
 import javax.swing.DefaultComboBoxModel;
 
 /**
- *
+ * Allows the user to edit a <code>Keycard</code> already in the system.
  * @author Student
  */
 public class EditUser extends javax.swing.JDialog {
@@ -23,7 +24,9 @@ public class EditUser extends javax.swing.JDialog {
 
     /**
      * Creates new form EditUser
-     * @param keycard
+     * @param parent
+     * @param modal
+     * @param keycard The <code>Keycard</code> to edit
      */
     public EditUser(java.awt.Frame parent, boolean modal, Keycard keycard) {
         super(parent, modal);
@@ -176,7 +179,7 @@ public class EditUser extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                EditUser dialog = new EditUser(new javax.swing.JFrame(), true, new Keycard());
+                EditUser dialog = new EditUser(new javax.swing.JFrame(), true, KeycardFactory.Create(null, ""));
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -201,12 +204,16 @@ public class EditUser extends javax.swing.JDialog {
     private void Update() {
         updatePressed = true;
         
-        keycard.setName(tbxName.getText());
-        keycard.setRole(Role.values()[cbxRole.getSelectedIndex()]);
+        keycard.SetName(tbxName.getText());
+        keycard.SetRoll(Role.values()[cbxRole.getSelectedIndex()]);
         
         dispose();
     }
 
+    /**
+     * If the form was closed without being cancelled.
+     * @return <code>True</code> if the user still wants to continue
+     */
     public boolean WasUpdatePressed() {
         return updatePressed;
     }

@@ -5,11 +5,9 @@
  */
 package gui;
 
-import Locations.RoomType;
-
 /**
- *
- * @author Toby
+ * Allows the user of add a new <code>Campus</code> to the system.
+ * @author Student
  */
 public class NewCampus extends javax.swing.JDialog {
     
@@ -17,6 +15,8 @@ public class NewCampus extends javax.swing.JDialog {
 
     /**
      * Creates new form NewCampus
+     * @param parent
+     * @param modal
      */
     public NewCampus(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -159,10 +159,18 @@ public class NewCampus extends javax.swing.JDialog {
         btnCreate.setEnabled(!tbxName.getText().isEmpty());
     }
     
+    /**
+     * If the form was closed without being cancelled.
+     * @return <code>True</code> if the user still wants to continue
+     */
     public boolean WasCreatePressed(){
         return createPressed;
     }
     
+    /**
+     * Returns the name of the new <code>Campus</code>.
+     * @return The name of the new <code>Campus</code>
+     */
     public String GetName(){
         return tbxName.getText();
     }

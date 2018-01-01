@@ -9,7 +9,7 @@ import Locations.RoomType;
 import javax.swing.DefaultComboBoxModel;
 
 /**
- *
+ * Allows the user of add a new <code>Room</code> to the system.
  * @author Student
  */
 public class NewRoom extends javax.swing.JDialog {
@@ -20,6 +20,8 @@ public class NewRoom extends javax.swing.JDialog {
             
     /**
      * Creates new form NewRoom
+     * @param parent
+     * @param modal
      */
     public NewRoom(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -136,10 +138,18 @@ public class NewRoom extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbxOptions;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * If the form was closed without being cancelled.
+     * @return <code>True</code> if the user still wants to continue
+     */
     public boolean WasCreatePressed(){
         return createPressed;
     }
     
+    /**
+     * Returns the type of <code>Room</code> to create.
+     * @return The type of <code>Room</code>
+     */
     public RoomType GetType(){
         return RoomType.values()[cbxOptions.getSelectedIndex()];
     }

@@ -6,7 +6,7 @@
 package gui;
 
 /**
- *
+ * Allows the user of add a new <code>Building</code> to the system.
  * @author Student
  */
 public class NewBuilding extends javax.swing.JDialog {
@@ -15,6 +15,8 @@ public class NewBuilding extends javax.swing.JDialog {
 
     /**
      * Creates new form NewBuilding
+     * @param parent
+     * @param modal
      */
     public NewBuilding(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -175,14 +177,26 @@ public class NewBuilding extends javax.swing.JDialog {
         btnCreate.setEnabled(!tbxName.getText().isEmpty() && !tbxShortcode.getText().isEmpty());
     }
     
+    /**
+     * If the form was closed without being cancelled.
+     * @return <code>True</code> if the user still wants to continue
+     */
     public boolean WasCreatePressed(){
         return createPressed;
     }
     
+    /**
+     * Returns the name of the new <code>Building</code>.
+     * @return The name of the new <code>Building</code>
+     */
     public String GetName(){
         return tbxName.getText();
     }
     
+    /**
+     * Returns the shortcode of the new <code>Building</code>.
+     * @return The shortcode of the new <code>Building</code>
+     */
     public String GetShortcode(){
         return tbxShortcode.getText();
     }

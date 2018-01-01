@@ -19,16 +19,18 @@ import People.Keycard;
 import People.Role;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -46,8 +48,8 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     
     private final DefaultListModel logListModel;
     
-    private DefaultListModel usersListModel;
-    private DefaultListModel usersDisplayListModel;
+    private final DefaultListModel usersListModel;
+    private final DefaultListModel usersDisplayListModel;
     
     private final DefaultComboBoxModel locationStates;
     private Location selectedLocation;
@@ -57,7 +59,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {        
+    public MainWindow() {
         campusListModel = new DefaultListModel();
         buildingListModel = new DefaultListModel();
         floorListModel = new DefaultListModel();
@@ -74,7 +76,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         userFilterMenu = new JPopupMenu();
         
         Log.Logger().AddLogObserver(this);
-        Data.LoadState(STATELOCATION);
+        Data.LoadState(STATELOCATION, true);
         
         UpdateLocationStates();
         
@@ -123,6 +125,9 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         btnEditUser = new javax.swing.JButton();
         btnSimulate = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        btnExportData = new javax.swing.JButton();
+        btnImportData = new javax.swing.JButton();
+        btnReadOnly = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Keycard System");
@@ -252,7 +257,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             }
         });
 
-        btnSimulate.setText("Simulate in Room");
+        btnSimulate.setText("Simulate In Room");
         btnSimulate.setEnabled(false);
         btnSimulate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -267,6 +272,27 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             }
         });
 
+        btnExportData.setText("Export All Data As...");
+        btnExportData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportDataActionPerformed(evt);
+            }
+        });
+
+        btnImportData.setText("Import All Data From...");
+        btnImportData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImportDataActionPerformed(evt);
+            }
+        });
+
+        btnReadOnly.setText("Import For Read-Only From...");
+        btnReadOnly.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReadOnlyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -276,53 +302,58 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnUpdateMode))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnUpdateMode))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnAddUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnDeleteUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnEditUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1)
-                            .addGroup(layout.createSequentialGroup()
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnAddCampus)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAddLocation)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnDeleteLocation))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 367, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnAddUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnDeleteUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnEditUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSaveAll)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addComponent(btnAddCampus)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnAddLocation)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnDeleteLocation))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(btnReadOnly, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnSaveAll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnExportData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnImportData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane3)
                     .addComponent(jScrollPane4)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnUpdateMode, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -337,17 +368,24 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnMenu)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAddUser)
+                        .addComponent(btnSaveAll)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEditUser)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddUser)
+                            .addComponent(btnReadOnly))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnSimulate)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnEditUser)
+                            .addComponent(btnImportData))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSimulate)
+                            .addComponent(btnExportData))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDeleteUser)
-                            .addComponent(btnSaveAll)
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -389,7 +427,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }//GEN-LAST:event_lstCampusesMouseReleased
 
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
-        SetLocationtoRoom();
+        SetLocationToRoom();
         UpdateStateDropdown();
         DisableChildControls();
         SetSimulate();
@@ -440,6 +478,18 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         OpenTodaysLog();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void btnExportDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportDataActionPerformed
+        ExportData();
+    }//GEN-LAST:event_btnExportDataActionPerformed
+
+    private void btnImportDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportDataActionPerformed
+        ImportData();
+    }//GEN-LAST:event_btnImportDataActionPerformed
+
+    private void btnReadOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadOnlyActionPerformed
+        ReadOnly();
+    }//GEN-LAST:event_btnReadOnlyActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -480,7 +530,10 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private javax.swing.JButton btnDeleteLocation;
     private javax.swing.JButton btnDeleteUser;
     private javax.swing.JButton btnEditUser;
+    private javax.swing.JButton btnExportData;
+    private javax.swing.JButton btnImportData;
     private javax.swing.JButton btnMenu;
+    private javax.swing.JButton btnReadOnly;
     private javax.swing.JButton btnSaveAll;
     private javax.swing.JButton btnSimulate;
     private javax.swing.JButton btnUpdateMode;
@@ -502,7 +555,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     // End of variables declaration//GEN-END:variables
     
     @Override
-    public void ObservedStateUpdate(String message) {
+    public void ObservedLogUpdate(String message) {
         logListModel.addElement(message);
         if (logListModel.getSize() == 6)
             logListModel.remove(0);
@@ -606,7 +659,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         selectedLocation = ((Building)selectedLocation).GetChild(lstFloors.getSelectedValue());
     }
 
-    private void SetLocationtoRoom() {
+    private void SetLocationToRoom() {
         SetLocationToFloor();
         selectedLocation = ((Floor)selectedLocation).GetChild((String)roomListModel.getElementAt(lstRooms.getSelectedIndex()));
     }
@@ -806,5 +859,61 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private void OpenTodaysLog() {
         ShowFullLog dialog = new ShowFullLog(this, true, Log.Logger().GetTodaysLogFile());
         dialog.setVisible(true);
+    }
+
+    private void ExportData() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter(".state file", "state"));
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().toString() + ".state");
+            Data.SaveState(file.getPath(), Data.allCampuses, Data.allKeycards);
+        }
+    }
+
+    private void ImportData() {
+        String[] options = {"Yes, Overwrite all", "No, Open read-only version", "Cancel"};
+        switch (JOptionPane.showOptionDialog(this, 
+                            "This will overwrite ALL locations and keycards in the system.\n"
+                                    + "Are you sure you want to do this?\n"
+                                    + "\n"
+                                    + "If you would like to open and READ ONLY a previous state, click read-only.",
+                            "Overwrite all?",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.WARNING_MESSAGE,
+                            null,
+                            options,
+                            options[1])){
+            case JOptionPane.YES_OPTION:
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.setFileFilter(new FileNameExtensionFilter(".state file", "state"));
+                if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    File file = new File(fileChooser.getSelectedFile().toString());
+                    if (Data.LoadState(file.getPath(), true) != null){
+                        RefreshCampusListModel();
+                        PopulateUsers();
+                    }
+                }
+                break;
+            case JOptionPane.NO_OPTION:
+                ReadOnly();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ReadOnly() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileNameExtensionFilter(".state file", "state"));
+        fileChooser.setCurrentDirectory(new File("Emergency Logs"));
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = new File(fileChooser.getSelectedFile().toString());
+            
+            ViewState dialog = new ViewState(this, true, file.toPath());
+            dialog.setVisible(true);
+        }
     }
 }

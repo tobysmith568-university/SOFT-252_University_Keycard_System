@@ -9,7 +9,7 @@ import People.Role;
 import javax.swing.DefaultComboBoxModel;
 
 /**
- *
+ * Allows the user of add a new <code>Keycard</code> to the system.
  * @author Student
  */
 public class NewUser extends javax.swing.JDialog {
@@ -20,6 +20,8 @@ public class NewUser extends javax.swing.JDialog {
 
     /**
      * Creates new form NewUser
+     * @param parent
+     * @param modal
      */
     public NewUser(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -186,14 +188,26 @@ public class NewUser extends javax.swing.JDialog {
         dispose();
     }
     
+    /**
+     * If the form was closed without being cancelled.
+     * @return <code>True</code> if the user still wants to continue
+     */
     public boolean WasCreatePressed() {
         return createPressed;
     }
     
+    /**
+     * Returns the name of the owner of the new <code>keycard</code>.
+     * @return The name of the owner
+     */
     public String GetName() {
         return tbxName.getText();
     }
     
+    /**
+     * Returns the <code>Role</code> of the new <code>Keycard</code>.
+     * @return The <code>Role</code>
+     */
     public Role GetRole() {
         return Role.values()[cbxRole.getSelectedIndex()];
     }
