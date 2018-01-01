@@ -35,9 +35,10 @@ public class ViewState extends javax.swing.JDialog {
      * Creates new form ViewState
      * @param parent
      * @param modal
-     * @param path The <code>Path</code> of the data to load
+     * @param data
+     * @param title
      */
-    public ViewState(java.awt.Frame parent, boolean modal, Path path) {
+    public ViewState(java.awt.Frame parent, boolean modal, Data data, String title) {
         super(parent, modal);
         
         campusListModel = new DefaultListModel();
@@ -46,12 +47,12 @@ public class ViewState extends javax.swing.JDialog {
         roomListModel = new DefaultListModel();
         roomDisplayListModel = new DefaultListModel();
         
-        LoadData(path);
+        this.data = data;
         
         initComponents();
         setLocationRelativeTo(parent);
         
-        lblTitle.setText(path.getFileName().toString());
+        RefreshCampusListModel();
     }
 
     /**
@@ -222,17 +223,15 @@ public class ViewState extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                ViewState dialog = new ViewState(new javax.swing.JFrame(), true, Paths.get("Current.state"));
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            ViewState dialog = new ViewState(new javax.swing.JFrame(), true, Data.LoadState("Current.state", false), "Current.state");
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 
@@ -249,13 +248,7 @@ public class ViewState extends javax.swing.JDialog {
     private javax.swing.JList<String> lstFloors;
     private javax.swing.JList<String> lstRooms;
     // End of variables declaration//GEN-END:variables
-
-    private void LoadData(Path path) {
-        data = Data.LoadState(path.toString(), false);
-        RefreshCampusListModel();
-    }
-    
-    
+   
     private void RefreshCampusListModel() {
         campusListModel.clear();
         buildingListModel.clear();
