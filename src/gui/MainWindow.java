@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -89,7 +90,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         setLocationRelativeTo(null);
         
         GenerateUserFilterMenu();
-        PopulateUsers();     
+        PopulateUsers();
     }
 
     /**
@@ -800,20 +801,36 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 enabledRoles.add(Role.values()[i]);
         }
         
-        Data.allKeycards.values().stream()
-            .filter((keycard) -> (enabledRoles.contains(keycard.GetRole())))
+        Data.allKeycards.values().stream()                
+            .filter(keycard -> FoundIntersection(keycard.GetRoles(), enabledRoles))
             .sorted(Comparator.comparing(Keycard::GetName))
-            .forEachOrdered((keycard) -> {
+            .forEachOrdered(keycard -> {
                 usersListModel.addElement(keycard);
-                usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRole().GetName() + ")");
+                usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + ListRoles(keycard.GetRoles()) + ")");
             });       
+    }
+    
+    private boolean FoundIntersection(Role[] roles1, ArrayList<Role> roles2){
+        return Arrays.stream(roles1)
+                .distinct()
+                .filter(r1 -> roles2.stream().anyMatch(r2 -> r2 == r1))
+                .count() > 0;
+                
+    }
+    
+    private String ListRoles(Role[] roles){
+        String output = "";
+        for (Role role : roles) {
+            output += " / " + role.GetName();
+        }
+        return output.substring(3);
     }
 
     private void AddNewUser() {
         NewUser dialog = new NewUser(this, true);
         dialog.setVisible(true);
         if(dialog.WasCreatePressed()){
-            KeycardFactory.Create(dialog.GetRole(), dialog.GetName());
+            KeycardFactory.Create(dialog.GetRoles(), dialog.GetName());
             PopulateUsers();
         }
     }

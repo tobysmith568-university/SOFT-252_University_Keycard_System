@@ -9,6 +9,7 @@ import Control.KeycardFactory;
 import People.Keycard;
 import People.Role;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 
 /**
  * Allows the user to edit a <code>Keycard</code> already in the system.
@@ -17,6 +18,8 @@ import javax.swing.DefaultComboBoxModel;
 public class EditUser extends javax.swing.JDialog {
     
     private boolean updatePressed = false;
+    
+    DefaultListModel keycardRoles; 
 
     DefaultComboBoxModel roles;
     
@@ -30,6 +33,8 @@ public class EditUser extends javax.swing.JDialog {
      */
     public EditUser(java.awt.Frame parent, boolean modal, Keycard keycard) {
         super(parent, modal);
+        
+        keycardRoles = new DefaultListModel();
         roles = new DefaultComboBoxModel();
         
         for (Role role : Role.values()) {
@@ -44,7 +49,9 @@ public class EditUser extends javax.swing.JDialog {
         tbxID.setEditable(false);
         tbxID.setText(keycard.GetCardID());
         tbxName.setText(keycard.GetName());
-        cbxRole.setSelectedItem(keycard.GetRole().GetName());        
+        for (Role role : keycard.GetRoles()) {
+            keycardRoles.addElement(role.GetName());
+        }
     }
 
     /**
@@ -63,6 +70,10 @@ public class EditUser extends javax.swing.JDialog {
         tbxName = new javax.swing.JTextField();
         cbxRole = new javax.swing.JComboBox<>();
         btnUpdate = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        lstRoles = new javax.swing.JList<>();
+        btnRemove = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit User");
@@ -78,7 +89,7 @@ public class EditUser extends javax.swing.JDialog {
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel3.setText("Role:");
+        jLabel3.setText("Roles:");
 
         tbxID.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         tbxID.setNextFocusableComponent(tbxName);
@@ -100,26 +111,54 @@ public class EditUser extends javax.swing.JDialog {
             }
         });
 
+        lstRoles.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lstRoles.setModel(keycardRoles);
+        jScrollPane1.setViewportView(lstRoles);
+
+        btnRemove.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnRemove.setText("Remove");
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
+            }
+        });
+
+        btnAdd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnAdd.setText("Add");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(tbxID)
-                    .addComponent(tbxName)
-                    .addComponent(cbxRole, 0, 156, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnUpdate)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(tbxID, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                            .addComponent(tbxName, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnUpdate, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(cbxRole, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRemove)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -134,12 +173,18 @@ public class EditUser extends javax.swing.JDialog {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(tbxName, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbxRole, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnRemove)
+                    .addComponent(btnAdd))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cbxRole, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnUpdate)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -148,6 +193,14 @@ public class EditUser extends javax.swing.JDialog {
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         Update();
     }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        AddRole();
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+        RemoveRole();
+    }//GEN-LAST:event_btnRemoveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -179,7 +232,7 @@ public class EditUser extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                EditUser dialog = new EditUser(new javax.swing.JFrame(), true, KeycardFactory.Create(null, ""));
+                EditUser dialog = new EditUser(new javax.swing.JFrame(), true, KeycardFactory.Create(new Role[0], ""));
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -192,11 +245,15 @@ public class EditUser extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JButton btnUpdate;
     private javax.swing.JComboBox<String> cbxRole;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<String> lstRoles;
     private javax.swing.JTextField tbxID;
     private javax.swing.JTextField tbxName;
     // End of variables declaration//GEN-END:variables
@@ -205,7 +262,15 @@ public class EditUser extends javax.swing.JDialog {
         updatePressed = true;
         
         keycard.SetName(tbxName.getText());
-        keycard.SetRoll(Role.values()[cbxRole.getSelectedIndex()]);
+        for (Role role : keycard.GetRoles()) {
+            keycard.RemoveRole(role);
+        }
+        for (Object line : keycardRoles.toArray()) {
+            for (Role role : Role.values()) {
+                if (role.GetName().equals((String)line))
+                    keycard.AddRole(role);
+            }
+        }
         
         dispose();
     }
@@ -216,5 +281,21 @@ public class EditUser extends javax.swing.JDialog {
      */
     public boolean WasUpdatePressed() {
         return updatePressed;
+    }
+
+    private void AddRole() {
+        Role role = Role.values()[cbxRole.getSelectedIndex()];
+        if (!keycardRoles.contains(role.GetName()))
+            keycardRoles.addElement(role.GetName());
+        
+        btnUpdate.setEnabled(true);
+    }
+
+    private void RemoveRole() {
+        if (lstRoles.getSelectedIndex() != -1)
+            keycardRoles.remove(lstRoles.getSelectedIndex());
+        
+        if (keycardRoles.size() == 0)
+            btnUpdate.setEnabled(false);
     }
 }
