@@ -19,6 +19,7 @@ import People.Keycard;
 import People.Role;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -29,9 +30,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -47,6 +50,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private final DefaultListModel floorListModel;
     private final DefaultListModel roomListModel;
     private final DefaultListModel roomDisplayListModel;
+    
+    private int selectedCampusIndex;
+    private int selectedBuildingIndex;
+    private int selectedFloorIndex;
+    private int selectedRoomIndex;
     
     private final DefaultListModel logListModel;
     
@@ -133,6 +141,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Keycard System");
+        setResizable(false);
 
         lstRooms.setModel(roomDisplayListModel);
         lstRooms.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -146,6 +155,11 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         lstCampuses.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 lstCampusesMouseReleased(evt);
+            }
+        });
+        lstCampuses.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                lstCampusesValueChanged(evt);
             }
         });
         jScrollPane2.setViewportView(lstCampuses);
@@ -329,7 +343,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                                     .addComponent(btnMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnEditUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -408,7 +422,8 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }//GEN-LAST:event_lstLogMouseClicked
 
     private void lstBuildingsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBuildingsMouseReleased
-        SetLocationToBuilding();
+        selectedBuildingIndex = CheckForDeselect(evt, selectedBuildingIndex);
+        SetLocationToBuilding();        
         UpdateStateDropdown();
         RefreshFloorListModel();
         EnableLocationControls();
@@ -416,6 +431,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }//GEN-LAST:event_lstBuildingsMouseReleased
 
     private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
+        selectedFloorIndex = CheckForDeselect(evt, selectedFloorIndex);
         SetLocationToFloor();
         UpdateStateDropdown();
         RefreshRoomListModel();
@@ -424,6 +440,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }//GEN-LAST:event_lstFloorsMouseReleased
 
     private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
+        selectedCampusIndex = CheckForDeselect(evt, selectedCampusIndex);
         SetLocationToCampus();
         UpdateStateDropdown();
         RefreshBuildingListModel();
@@ -432,6 +449,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }//GEN-LAST:event_lstCampusesMouseReleased
 
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
+        selectedRoomIndex = CheckForDeselect(evt, selectedRoomIndex);
         SetLocationToRoom();
         UpdateStateDropdown();
         DisableChildControls();
@@ -494,6 +512,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private void btnReadOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadOnlyActionPerformed
         ReadOnly();
     }//GEN-LAST:event_btnReadOnlyActionPerformed
+
+    private void lstCampusesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstCampusesValueChanged
+        if (evt.getValueIsAdjusting())
+            return;
+        
+    }//GEN-LAST:event_lstCampusesValueChanged
 
     /**
      * @param args the command line arguments
@@ -623,18 +647,20 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateStateDropdown() {
-        if (selectedLocation.GetIsMixedState())
+        if (selectedLocation.GetIsMixedState()){
             cbxState.setSelectedIndex(-1);
-        else
+            btnUpdateMode.setEnabled(false);
+        } else {
             for (int i = 0; i < locationStates.getSize(); i++) {
                 if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName())
                     cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
             }
+            btnUpdateMode.setEnabled(true);            
+        }
     }
 
     private void EnableLocationControls() {
         cbxState.setEnabled(true);
-        btnUpdateMode.setEnabled(true);
         btnAddLocation.setEnabled(true);
         btnDeleteLocation.setEnabled(true);
     }
@@ -944,5 +970,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 dialog.setVisible(true);
             }
         }
+    }
+
+    private int CheckForDeselect(MouseEvent evt, int givenList) {
+        if (evt.isControlDown())
+            ((JList)evt.getSource()).setSelectedIndex(givenList);
+        else
+            givenList = ((JList)evt.getSource()).getSelectedIndex();
+        
+        return givenList;
     }
 }
