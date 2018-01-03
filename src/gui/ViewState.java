@@ -11,8 +11,6 @@ import Locations.Campus;
 import Locations.Floor;
 import Locations.Location;
 import Locations.Room;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import javax.swing.DefaultListModel;
 
 /**
@@ -27,7 +25,7 @@ public class ViewState extends javax.swing.JDialog {
     private final DefaultListModel roomListModel;
     private final DefaultListModel roomDisplayListModel;
     
-    private Data data;
+    private final Data data;
     
     private Location selectedLocation;
 
@@ -51,6 +49,9 @@ public class ViewState extends javax.swing.JDialog {
         
         initComponents();
         setLocationRelativeTo(parent);
+        
+        lblTitle.setText(title);
+        lblState.setText("");
         
         RefreshCampusListModel();
     }
@@ -125,6 +126,7 @@ public class ViewState extends javax.swing.JDialog {
 
         lblState.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblState.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblState.setText("STATE AND REASON");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -326,7 +328,12 @@ public class ViewState extends javax.swing.JDialog {
     private void UpdateStateLabel() {
         if (selectedLocation.GetIsMixedState())
             lblState.setText("Mixed State");
-        else
-            lblState.setText(selectedLocation.GetState().GetName());
+        else {
+            if (selectedLocation.GetStateChangeReason().equals(""))
+                lblState.setText(selectedLocation.GetState().GetName());
+            else
+                lblState.setText(selectedLocation.GetState().GetName() + ": "
+                        +  selectedLocation.GetStateChangeReason());
+        }
     }
 }

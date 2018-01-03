@@ -6,6 +6,7 @@
 package gui;
 
 import Control.KeycardFactory;
+import Control.Log;
 import People.Keycard;
 import People.Role;
 import javax.swing.DefaultComboBoxModel;
@@ -261,6 +262,9 @@ public class EditUser extends javax.swing.JDialog {
     private void Update() {
         updatePressed = true;
         
+        String oldName = keycard.GetName();
+        String oldRoles = keycard.GetRolesString(" / ");
+        
         keycard.SetName(tbxName.getText());
         for (Role role : keycard.GetRoles()) {
             keycard.RemoveRole(role);
@@ -271,7 +275,8 @@ public class EditUser extends javax.swing.JDialog {
                     keycard.AddRole(role);
             }
         }
-        
+        Log.Log("Updated user \"" + keycard.GetCardID() + " - " + oldName + " ("
+                + oldRoles + ") to " + keycard.GetName() + " (" + keycard.GetRolesString(" / ") + ")");
         dispose();
     }
 

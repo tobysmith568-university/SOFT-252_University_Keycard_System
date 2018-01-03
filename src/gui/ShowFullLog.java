@@ -239,6 +239,7 @@ public class ShowFullLog extends javax.swing.JDialog {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter(".log file", "log"));
+        fileChooser.setCurrentDirectory(new File("Emergency Logs"));
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             return Paths.get(fileChooser.getSelectedFile().toString());
         }
@@ -250,8 +251,9 @@ public class ShowFullLog extends javax.swing.JDialog {
             Display(allLines);
         else{
             Display(Arrays.stream(allLines)
-                .filter(line -> line.contains(tbxSearch.getText()))
-                .toArray(String[]::new));
+                .filter(line -> line.toLowerCase()
+                        .contains(tbxSearch.getText().toLowerCase()))
+                    .toArray(String[]::new));
         }
     }
 

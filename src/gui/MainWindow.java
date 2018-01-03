@@ -368,20 +368,20 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane3)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                     .addComponent(jScrollPane4)
                     .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnAddCampus, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnAddLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAddLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnDeleteLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxState, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnUpdateMode, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnUpdateMode, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -647,20 +647,18 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateStateDropdown() {
-        if (selectedLocation.GetIsMixedState()){
+        if (selectedLocation.GetIsMixedState())
             cbxState.setSelectedIndex(-1);
-            btnUpdateMode.setEnabled(false);
-        } else {
+        else
             for (int i = 0; i < locationStates.getSize(); i++) {
                 if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName())
                     cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
             }
-            btnUpdateMode.setEnabled(true);            
-        }
     }
 
     private void EnableLocationControls() {
         cbxState.setEnabled(true);
+        btnUpdateMode.setEnabled(true);
         btnAddLocation.setEnabled(true);
         btnDeleteLocation.setEnabled(true);
     }
@@ -696,24 +694,35 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateCurrentState() {
-        selectedLocation.SetRoomState(LocationState.values()[cbxState.getSelectedIndex()]);
+        if (cbxState.getSelectedIndex() == -1)
+            return;
+        
+        LocationState newState = LocationState.values()[cbxState.getSelectedIndex()];
+        
+        UpdateReason dialog = new UpdateReason(this, true, selectedLocation.GetFullName(), newState);
+        dialog.setVisible(true);
+        if(dialog.WasUpdatePressed()) {
+            selectedLocation.SetRoomState(newState, dialog.GetReason());
+        } else {
+            UpdateStateDropdown();
+        }
     }
 
     private void NewChildLocation() {
         if (selectedLocation instanceof Campus){
             NewBuilding dialog = new NewBuilding(this, true);
             dialog.setVisible(true);
-            if(dialog.WasCreatePressed()){
+            if(dialog.WasCreatePressed()) {
                 ((Campus)selectedLocation).AddBuilding(dialog.GetName(), dialog.GetShortcode());
                 RefreshBuildingListModel();
             }
-        } else if (selectedLocation instanceof Building){
+        } else if (selectedLocation instanceof Building) {
             ((Building)selectedLocation).AddFloor();
             RefreshFloorListModel();
-        } else if (selectedLocation instanceof Floor){
+        } else if (selectedLocation instanceof Floor) {
             NewRoom dialog = new NewRoom(this, true);
             dialog.setVisible(true);
-            if(dialog.WasCreatePressed()){
+            if(dialog.WasCreatePressed()) {
                 ((Floor)selectedLocation).AddRoom(dialog.GetType());
                 RefreshRoomListModel();
             }
@@ -727,6 +736,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         dialog.setVisible(true);
         if(dialog.WasCreatePressed()){
             Data.allCampuses.put(dialog.GetName(), new Campus(dialog.GetName()));
+            Log.Log("Added new Campus \"" + dialog.GetName() + "\"");
             RefreshCampusListModel();
         }
     }
@@ -832,7 +842,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             .sorted(Comparator.comparing(Keycard::GetName))
             .forEachOrdered(keycard -> {
                 usersListModel.addElement(keycard);
-                usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + ListRoles(keycard.GetRoles()) + ")");
+                usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRolesString(" / ") + ")");
             });       
     }
     
@@ -843,20 +853,14 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 .count() > 0;
                 
     }
-    
-    private String ListRoles(Role[] roles){
-        String output = "";
-        for (Role role : roles) {
-            output += " / " + role.GetName();
-        }
-        return output.substring(3);
-    }
 
     private void AddNewUser() {
         NewUser dialog = new NewUser(this, true);
         dialog.setVisible(true);
         if(dialog.WasCreatePressed()){
-            KeycardFactory.Create(dialog.GetRoles(), dialog.GetName());
+            Keycard newKeycard = KeycardFactory.Create(dialog.GetRoles(), dialog.GetName());
+            Log.Log("Added new keycard: " + newKeycard.GetCardID() + " - "
+                    + newKeycard.GetName() + " (" + newKeycard.GetRolesString(" / ") + ")");
             PopulateUsers();
         }
     }
