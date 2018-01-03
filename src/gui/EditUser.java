@@ -50,6 +50,7 @@ public class EditUser extends javax.swing.JDialog {
         tbxID.setEditable(false);
         tbxID.setText(keycard.GetCardID());
         tbxName.setText(keycard.GetName());
+        
         for (Role role : keycard.GetRoles()) {
             keycardRoles.addElement(role.GetName());
         }
@@ -191,14 +192,17 @@ public class EditUser extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Whenever the update button is pressed
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         Update();
     }//GEN-LAST:event_btnUpdateActionPerformed
 
+    //Whenever the add button is pressed
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         AddRole();
     }//GEN-LAST:event_btnAddActionPerformed
 
+    //Whenever the remove button is pressed
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         RemoveRole();
     }//GEN-LAST:event_btnRemoveActionPerformed
@@ -262,21 +266,29 @@ public class EditUser extends javax.swing.JDialog {
     private void Update() {
         updatePressed = true;
         
+        //Save records of the old details
         String oldName = keycard.GetName();
         String oldRoles = keycard.GetRolesString(" / ");
         
+        //Remove all the roles from the keycard
         keycard.SetName(tbxName.getText());
         for (Role role : keycard.GetRoles()) {
             keycard.RemoveRole(role);
         }
+        
+        //Add all the new wanted roles to the keycard
+        //For every desired role name, check every role, if their names match add the role
         for (Object line : keycardRoles.toArray()) {
             for (Role role : Role.values()) {
                 if (role.GetName().equals((String)line))
                     keycard.AddRole(role);
             }
         }
+        
+        //Tell the logger
         Log.Log("Updated user \"" + keycard.GetCardID() + " - " + oldName + " ("
                 + oldRoles + ") to " + keycard.GetName() + " (" + keycard.GetRolesString(" / ") + ")");
+        
         dispose();
     }
 
@@ -289,18 +301,27 @@ public class EditUser extends javax.swing.JDialog {
     }
 
     private void AddRole() {
+        //Find the desired role
         Role role = Role.values()[cbxRole.getSelectedIndex()];
+        
+        //Add the role to the keycard if it doesn't already have it
         if (!keycardRoles.contains(role.GetName()))
             keycardRoles.addElement(role.GetName());
         
-        btnUpdate.setEnabled(true);
+        //Update the update button
+        CanUpdate();
     }
 
     private void RemoveRole() {
+        //Remove the role at the selected index
         if (lstRoles.getSelectedIndex() != -1)
             keycardRoles.remove(lstRoles.getSelectedIndex());
         
-        if (keycardRoles.size() == 0)
-            btnUpdate.setEnabled(false);
+        //Update the update button
+        CanUpdate();
+    }
+    
+    private void CanUpdate() {
+        btnUpdate.setEnabled(keycardRoles.size() > 0 && !tbxName.getText().isEmpty());
     }
 }

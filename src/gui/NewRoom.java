@@ -31,7 +31,6 @@ public class NewRoom extends javax.swing.JDialog {
             roomTypes.addElement(type.GetName());
         }
         
-        
         initComponents();
         setLocationRelativeTo(parent);
     }
@@ -87,6 +86,7 @@ public class NewRoom extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Whenever the create button is pressed
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         Create();
     }//GEN-LAST:event_btnCreateActionPerformed
@@ -142,7 +142,7 @@ public class NewRoom extends javax.swing.JDialog {
      * If the form was closed without being cancelled.
      * @return <code>True</code> if the user still wants to continue
      */
-    public boolean WasCreatePressed(){
+    public boolean WasCreatePressed() {
         return createPressed;
     }
     
@@ -150,7 +150,7 @@ public class NewRoom extends javax.swing.JDialog {
      * Returns the type of <code>Room</code> to create.
      * @return The type of <code>Room</code>
      */
-    public RoomType GetType(){
+    public RoomType GetType() {
         return RoomType.values()[cbxOptions.getSelectedIndex()];
     }
 

@@ -54,7 +54,7 @@
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="btnAddUser" max="32767" attributes="0"/>
                                   <Component id="btnDeleteUser" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="btnMenu" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="btnRoleMenu" alignment="0" max="32767" attributes="0"/>
                                   <Component id="btnEditUser" max="32767" attributes="0"/>
                                   <Component id="btnSimulate" max="32767" attributes="0"/>
                               </Group>
@@ -67,7 +67,7 @@
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="btnSaveAll" alignment="1" max="32767" attributes="0"/>
                                   <Component id="btnExportData" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="jButton1" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="btnViewLog" alignment="1" max="32767" attributes="0"/>
                                   <Component id="btnImportData" alignment="1" max="32767" attributes="0"/>
                                   <Component id="btnReadOnly" alignment="1" max="32767" attributes="0"/>
                               </Group>
@@ -116,7 +116,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="btnMenu" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnRoleMenu" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnSaveAll" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -137,7 +137,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnDeleteUser" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="3" max="32767" attributes="0"/>
+                          <Component id="btnViewLog" alignment="3" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Component id="jScrollPane6" min="-2" pref="288" max="-2" attributes="0"/>
@@ -187,7 +187,6 @@
           </Properties>
           <Events>
             <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lstCampusesMouseReleased"/>
-            <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="lstCampusesValueChanged"/>
           </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -351,12 +350,12 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="btnMenu">
+    <Component class="javax.swing.JButton" name="btnRoleMenu">
       <Properties>
         <Property name="text" type="java.lang.String" value="Filter Roles"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMenuActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRoleMenuActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnAddUser">
@@ -397,12 +396,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSimulateActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="btnViewLog">
       <Properties>
         <Property name="text" type="java.lang.String" value="View Log"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnViewLogActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnExportData">

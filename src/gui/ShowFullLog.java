@@ -140,14 +140,17 @@ public class ShowFullLog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //When the Save As button is pressed
     private void btnSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveAsActionPerformed
         ExportLog();
     }//GEN-LAST:event_btnSaveAsActionPerformed
 
+    //When the Open button is pressed
     private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
-        LoadData(SelectPath());
+        LoadData(SelectOpenPath());
     }//GEN-LAST:event_btnOpenActionPerformed
 
+    //When the search button is pressed
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         Search();
     }//GEN-LAST:event_btnSearchActionPerformed
@@ -207,40 +210,52 @@ public class ShowFullLog extends javax.swing.JDialog {
     private void LoadData(Path path) {
         if (path == null)
             return;
+        
+        //Set the title to a formatted version of the given path's file name
         lblTitle.setText(path.getFileName().toString().replace('-', '/').split("\\.")[0]);
         
         if (!Files.exists(path) || !Files.isReadable(path))
             Log.Log("ERROR: Problem accessing file");
         else
             try {
+                //Display all the lines in the file at the given path
                 Display(allLines = Files.readAllLines(path).toArray(new String[0]));
             } catch (IOException e) {
-                Log.Log(e.getMessage());
+                Log.Log("ERROR: " + e.getMessage());
             }
     }
 
     private void ExportLog() {
+        //Open a file chooser to ask the user for a location
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter(".log file", "log"));
+        
+        //If the user found a wanted location
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            //Find the wanted file location
             File file = new File(fileChooser.getSelectedFile().toString() + ".log");
             
             try {
+                //Write all the current lines to the location either by overwriting or by creating the file
                 Files.write(file.toPath(), Arrays.asList(lines), Files.exists(file.toPath()) ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE);
                 Log.Log("Written log file to \"" + file.toPath() + "\"");
             } catch (IOException e) {
-                    Log.Log(e.getMessage());
+                Log.Log("ERROR: " + e.getMessage());
             }
         }
     }
 
-    private Path SelectPath() {
+    private Path SelectOpenPath() {
+        //Open a file chooser to ask the user for a location
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter(".log file", "log"));
         fileChooser.setCurrentDirectory(new File("Emergency Logs"));
+        
+        //If the user found a wanted location
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            //Return that wanted location
             return Paths.get(fileChooser.getSelectedFile().toString());
         }
         return null;
@@ -250,6 +265,8 @@ public class ShowFullLog extends javax.swing.JDialog {
         if (tbxSearch.getText().isEmpty())
             Display(allLines);
         else{
+            //Display the lines filtered by those that only contain the search
+            //term (not case sensitive) in array form
             Display(Arrays.stream(allLines)
                 .filter(line -> line.toLowerCase()
                         .contains(tbxSearch.getText().toLowerCase()))

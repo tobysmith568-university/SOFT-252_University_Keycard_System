@@ -9,7 +9,8 @@ import Locations.States.LocationState;
 import static Locations.States.LocationState.NOEMERGENCY;
 
 /**
- *
+ * Forces the user to give a reason as to why they are changing the state of a
+ * location.
  * @author Student
  */
 public class UpdateReason extends javax.swing.JDialog {
@@ -18,7 +19,10 @@ public class UpdateReason extends javax.swing.JDialog {
 
     /**
      * Creates new form UpdateReason
-     * @param state
+     * @param parent
+     * @param modal
+     * @param location The location which is having it's state changed
+     * @param state The new state of that location
      */
     public UpdateReason(java.awt.Frame parent, boolean modal, String location, LocationState state) {
         super(parent, modal);
@@ -99,10 +103,12 @@ public class UpdateReason extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //When any text is typed
     private void txaReasonKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txaReasonKeyReleased
         KeyPressed();
     }//GEN-LAST:event_txaReasonKeyReleased
 
+    //When the update button is pressed
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         Update();
     }//GEN-LAST:event_btnUpdateActionPerformed

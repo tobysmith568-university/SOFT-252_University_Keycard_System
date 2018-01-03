@@ -51,11 +51,6 @@ public class NewCampus extends javax.swing.JDialog {
         });
 
         tbxName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        tbxName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tbxNameActionPerformed(evt);
-            }
-        });
         tbxName.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 tbxNameKeyReleased(evt);
@@ -95,17 +90,15 @@ public class NewCampus extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Whenever the create button is pressed
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         Create();
     }//GEN-LAST:event_btnCreateActionPerformed
 
+    //Whenever a key is typed into the name textbox
     private void tbxNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxNameKeyReleased
         ButtonState();
     }//GEN-LAST:event_tbxNameKeyReleased
-
-    private void tbxNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tbxNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tbxNameActionPerformed
 
     /**
      * @param args the command line arguments
@@ -163,7 +156,7 @@ public class NewCampus extends javax.swing.JDialog {
      * If the form was closed without being cancelled.
      * @return <code>True</code> if the user still wants to continue
      */
-    public boolean WasCreatePressed(){
+    public boolean WasCreatePressed() {
         return createPressed;
     }
     
@@ -171,7 +164,7 @@ public class NewCampus extends javax.swing.JDialog {
      * Returns the name of the new <code>Campus</code>.
      * @return The name of the new <code>Campus</code>
      */
-    public String GetName(){
+    public String GetName() {
         return tbxName.getText();
     }
 

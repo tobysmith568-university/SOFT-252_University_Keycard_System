@@ -164,18 +164,22 @@ public class NewUser extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Whenever a key is typed in the name textbox
     private void tbxNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxNameKeyReleased
-        KeyPressed();
+        CanCreate();
     }//GEN-LAST:event_tbxNameKeyReleased
 
+    //Whenever the create button is pressed
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         CreatePressed();
     }//GEN-LAST:event_btnCreateActionPerformed
 
+    //Whenever the remove button is pressed
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         RemoveRole();
     }//GEN-LAST:event_btnRemoveActionPerformed
 
+    //Whenever the add button is pressed
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         AddRole();
     }//GEN-LAST:event_btnAddActionPerformed
@@ -234,10 +238,6 @@ public class NewUser extends javax.swing.JDialog {
     private javax.swing.JTextField tbxName;
     // End of variables declaration//GEN-END:variables
 
-    private void KeyPressed() {
-        CanCreate();
-    }
-
     private void CreatePressed() {
         createPressed = true;
         dispose();
@@ -260,11 +260,12 @@ public class NewUser extends javax.swing.JDialog {
     }
     
     /**
-     * Returns the <code>Role</code> of the new <code>Keycard</code>.
-     * @return The <code>Role</code>
+     * Returns the <code>Role</code>s of the new <code>Keycard</code>.
+     * @return The <code>Role</code>s
      */
     public Role[] GetRoles() {
         ArrayList<Role> output = new ArrayList<>();
+        //For every desired role name, check every role, if their names match add the role
         for (Object line : keycardRoles.toArray()) {
             for (Role role : Role.values()) {
                 if (role.GetName().equals((String)line))
@@ -275,22 +276,27 @@ public class NewUser extends javax.swing.JDialog {
     }
 
     private void AddRole() {
+        //Find the desired role
         Role role = Role.values()[cbxRole.getSelectedIndex()];
+        
+        //Add the role to the keycard if it doesn't already have it
         if (!keycardRoles.contains(role.GetName()))
             keycardRoles.addElement(role.GetName());
         
+        //Update the Create button
         CanCreate();
     }
 
     private void RemoveRole() {
-        
+        //Remove the role at the selected index
         if (lstRoles.getSelectedIndex() != -1)
             keycardRoles.remove(lstRoles.getSelectedIndex());
         
+        //Update the Create button
         CanCreate();
     }
     
-    private void CanCreate(){
+    private void CanCreate() {
         btnCreate.setEnabled(keycardRoles.size() > 0 && !tbxName.getText().isEmpty());
     }
 }

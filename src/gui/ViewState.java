@@ -173,26 +173,31 @@ public class ViewState extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    //When a campus is selected
     private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
         SetLocationToCampus();
         RefreshBuildingListModel();
     }//GEN-LAST:event_lstCampusesMouseReleased
-
+    
+    //When the close button is presed
     private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseActionPerformed
         dispose();
     }//GEN-LAST:event_btnCloseActionPerformed
 
+    //When a buildings is selcted
     private void lstBuildingsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBuildingsMouseReleased
         SetLocationToBuilding();
         RefreshFloorListModel();
     }//GEN-LAST:event_lstBuildingsMouseReleased
 
+    //When a floor is selected
     private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
         SetLocationToFloor();
         RefreshRoomListModel();
     }//GEN-LAST:event_lstFloorsMouseReleased
 
+    //When a room is selected
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
         SetLocationToRoom();
     }//GEN-LAST:event_lstRoomsMouseReleased
@@ -250,53 +255,65 @@ public class ViewState extends javax.swing.JDialog {
     private javax.swing.JList<String> lstFloors;
     private javax.swing.JList<String> lstRooms;
     // End of variables declaration//GEN-END:variables
-   
+
     private void RefreshCampusListModel() {
+        //Clear all the location lists right of and including campuses
         campusListModel.clear();
         buildingListModel.clear();
         floorListModel.clear();
         roomListModel.clear();
         roomDisplayListModel.clear();
         
+        //Add in each campus found in the data
         data.GetCampuses().values().forEach((campus) -> {
             campusListModel.addElement(campus.GetName());
         });
     }
 
     private void RefreshBuildingListModel() {
+        //Clear all the location lists right of and including buildings
         buildingListModel.clear();
         floorListModel.clear();
         roomListModel.clear();
         roomDisplayListModel.clear();
         
+        //Find the currently selected campus
         Campus selectedCampus = data.GetCampuses().get(lstCampuses.getSelectedValue());
         
-        for(Building building : selectedCampus.GetAllChildren()){
+        //Add in each building found in the campus
+        for(Building building : selectedCampus.GetAllChildren()) {
             buildingListModel.addElement(building.GetName());
         }
     }
 
     private void RefreshFloorListModel() {
+        //Clear all the location lists right of and including floors
         floorListModel.clear();
         roomListModel.clear();
         roomDisplayListModel.clear();
         
+        //Find the currently selected building
         Campus selectedCampus = data.GetCampuses().get(lstCampuses.getSelectedValue());
         Building selectedBuilding = selectedCampus.GetChild(lstBuildings.getSelectedValue());
         
-        for(Floor floor : selectedBuilding.GetAllChildren()){
+        //Add in each floor found in the building
+        for(Floor floor : selectedBuilding.GetAllChildren()) {
             floorListModel.addElement(floor.GetFloorNumber());
         }
     }
 
     private void RefreshRoomListModel() {
+        //Clear all the location lists right of and including rooms
         roomListModel.clear();
         roomDisplayListModel.clear();
+        
+        //Find the currently selected Floofloor
         Campus selectedCampus = data.GetCampuses().get(lstCampuses.getSelectedValue());
         Building selectedBuilding = selectedCampus.GetChild(lstBuildings.getSelectedValue());
         Floor selectedFloor = selectedBuilding.GetChild(lstFloors.getSelectedValue());
         
-        for(Room room : selectedFloor.GetAllChildren()){
+        //Add in each room found in that floor
+        for(Room room : selectedFloor.GetAllChildren()) {
             roomDisplayListModel.addElement(selectedFloor.GetFloorNumber() + room.GetNumber() + " (" + room.GetRoomType() + ")");
             roomListModel.addElement(room.GetNumber());
         }
@@ -326,11 +343,14 @@ public class ViewState extends javax.swing.JDialog {
     }
 
     private void UpdateStateLabel() {
+        //Show "Mixed State" if the current location is in a mixed state
         if (selectedLocation.GetIsMixedState())
             lblState.setText("Mixed State");
         else {
+            //Else show it's state's name if it has no reason
             if (selectedLocation.GetStateChangeReason().equals(""))
                 lblState.setText(selectedLocation.GetState().GetName());
+            //Else show it's state's name and reason if it has a reason
             else
                 lblState.setText(selectedLocation.GetState().GetName() + ": "
                         +  selectedLocation.GetStateChangeReason());

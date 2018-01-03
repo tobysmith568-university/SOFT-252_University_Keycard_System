@@ -111,14 +111,17 @@ public class NewBuilding extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Whenever a key is typed in the name textbox
     private void tbxNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxNameKeyReleased
         ButtonState();
     }//GEN-LAST:event_tbxNameKeyReleased
 
+    //Whenever a key is typed in the shortcode textbox
     private void tbxShortcodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbxShortcodeKeyReleased
         ButtonState();
     }//GEN-LAST:event_tbxShortcodeKeyReleased
 
+    //Whenever the create button is pressed
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         Create();
     }//GEN-LAST:event_btnCreateActionPerformed
@@ -181,7 +184,7 @@ public class NewBuilding extends javax.swing.JDialog {
      * If the form was closed without being cancelled.
      * @return <code>True</code> if the user still wants to continue
      */
-    public boolean WasCreatePressed(){
+    public boolean WasCreatePressed() {
         return createPressed;
     }
     
@@ -189,7 +192,7 @@ public class NewBuilding extends javax.swing.JDialog {
      * Returns the name of the new <code>Building</code>.
      * @return The name of the new <code>Building</code>
      */
-    public String GetName(){
+    public String GetName() {
         return tbxName.getText();
     }
     
@@ -197,7 +200,7 @@ public class NewBuilding extends javax.swing.JDialog {
      * Returns the shortcode of the new <code>Building</code>.
      * @return The shortcode of the new <code>Building</code>
      */
-    public String GetShortcode(){
+    public String GetShortcode() {
         return tbxShortcode.getText();
     }
 

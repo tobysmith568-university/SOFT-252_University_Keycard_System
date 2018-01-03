@@ -9,11 +9,7 @@ import Control.Data;
 import Control.KeycardFactory;
 import Control.Log;
 import Listeners.ILogObserver;
-import Locations.Building;
-import Locations.Campus;
-import Locations.Floor;
-import Locations.Location;
-import Locations.Room;
+import Locations.*;
 import Locations.States.LocationState;
 import People.Keycard;
 import People.Role;
@@ -25,20 +21,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import static javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
+ * The main GUI for the program
  * @author Student
  */
 public class MainWindow extends javax.swing.JFrame implements ILogObserver{
@@ -129,12 +117,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         btnDeleteLocation = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
         lstUsers = new javax.swing.JList<>();
-        btnMenu = new javax.swing.JButton();
+        btnRoleMenu = new javax.swing.JButton();
         btnAddUser = new javax.swing.JButton();
         btnDeleteUser = new javax.swing.JButton();
         btnEditUser = new javax.swing.JButton();
         btnSimulate = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnViewLog = new javax.swing.JButton();
         btnExportData = new javax.swing.JButton();
         btnImportData = new javax.swing.JButton();
         btnReadOnly = new javax.swing.JButton();
@@ -155,11 +143,6 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         lstCampuses.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 lstCampusesMouseReleased(evt);
-            }
-        });
-        lstCampuses.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                lstCampusesValueChanged(evt);
             }
         });
         jScrollPane2.setViewportView(lstCampuses);
@@ -242,10 +225,10 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         });
         jScrollPane6.setViewportView(lstUsers);
 
-        btnMenu.setText("Filter Roles");
-        btnMenu.addActionListener(new java.awt.event.ActionListener() {
+        btnRoleMenu.setText("Filter Roles");
+        btnRoleMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMenuActionPerformed(evt);
+                btnRoleMenuActionPerformed(evt);
             }
         });
 
@@ -281,10 +264,10 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             }
         });
 
-        jButton1.setText("View Log");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnViewLog.setText("View Log");
+        btnViewLog.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnViewLogActionPerformed(evt);
             }
         });
 
@@ -340,7 +323,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnAddUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnDeleteUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnRoleMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnEditUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnSimulate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -350,7 +333,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(btnSaveAll, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnExportData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnViewLog, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnImportData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnReadOnly, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(layout.createSequentialGroup()
@@ -385,7 +368,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnMenu)
+                        .addComponent(btnRoleMenu)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnSaveAll)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -403,7 +386,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnDeleteUser)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btnViewLog, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -413,14 +396,17 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //Whenever the save all data button is pressed
     private void btnSaveAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveAllActionPerformed
         Data.SaveState(STATELOCATION, Data.allCampuses, Data.allKeycards);
     }//GEN-LAST:event_btnSaveAllActionPerformed
 
+    //Whenever a log item is selected
     private void lstLogMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstLogMouseClicked
         DeselectLogItem();
     }//GEN-LAST:event_lstLogMouseClicked
 
+    //Whenever a building is selected
     private void lstBuildingsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBuildingsMouseReleased
         selectedBuildingIndex = CheckForDeselect(evt, selectedBuildingIndex);
         SetLocationToBuilding();        
@@ -430,6 +416,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         SetSimulate();
     }//GEN-LAST:event_lstBuildingsMouseReleased
 
+    //Whenever a floor is selected
     private void lstFloorsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstFloorsMouseReleased
         selectedFloorIndex = CheckForDeselect(evt, selectedFloorIndex);
         SetLocationToFloor();
@@ -439,6 +426,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         SetSimulate();
     }//GEN-LAST:event_lstFloorsMouseReleased
 
+    //Whenever a campus is selected
     private void lstCampusesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstCampusesMouseReleased
         selectedCampusIndex = CheckForDeselect(evt, selectedCampusIndex);
         SetLocationToCampus();
@@ -448,6 +436,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         SetSimulate();
     }//GEN-LAST:event_lstCampusesMouseReleased
 
+    //Whenever a room is selected
     private void lstRoomsMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstRoomsMouseReleased
         selectedRoomIndex = CheckForDeselect(evt, selectedRoomIndex);
         SetLocationToRoom();
@@ -456,68 +445,76 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         SetSimulate();
     }//GEN-LAST:event_lstRoomsMouseReleased
 
+    //Whenever the add new location button is pressed
     private void btnAddLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddLocationActionPerformed
         NewChildLocation();
     }//GEN-LAST:event_btnAddLocationActionPerformed
 
+    //Whenever the update mode (state) button is pressed
     private void btnUpdateModeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateModeActionPerformed
         UpdateCurrentState();
     }//GEN-LAST:event_btnUpdateModeActionPerformed
 
+    //Whenever the add new campus button is pressed
     private void btnAddCampusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCampusActionPerformed
         NewCampusLocation();
     }//GEN-LAST:event_btnAddCampusActionPerformed
 
+    //Whenever the delete location button is pressed
     private void btnDeleteLocationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteLocationActionPerformed
         DeleteSelectedLocation();
     }//GEN-LAST:event_btnDeleteLocationActionPerformed
 
-    private void btnMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMenuActionPerformed
+    //Whenever the role menu button is pressed
+    private void btnRoleMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRoleMenuActionPerformed
         OpenUserFilterMenu();
-    }//GEN-LAST:event_btnMenuActionPerformed
+    }//GEN-LAST:event_btnRoleMenuActionPerformed
 
+    //Whenever the add user button is pressed
     private void btnAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddUserActionPerformed
         AddNewUser();
     }//GEN-LAST:event_btnAddUserActionPerformed
 
+    //Whenever the delete user button is pressed
     private void btnDeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteUserActionPerformed
         DeleteSelectedUser();
     }//GEN-LAST:event_btnDeleteUserActionPerformed
 
+    //Whenever a keycard is selected
     private void lstUsersMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstUsersMouseReleased
         SetUserControls(true);
         SetSimulate();
     }//GEN-LAST:event_lstUsersMouseReleased
 
+    //Whenever the edit user (keycard) button is pressed
     private void btnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditUserActionPerformed
         EditSelectedUser();
     }//GEN-LAST:event_btnEditUserActionPerformed
 
+    //Whenever the simulate user (keycard) button is pressed
     private void btnSimulateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimulateActionPerformed
         SimulateUser();
     }//GEN-LAST:event_btnSimulateActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    //Whenever the view log button is pressed
+    private void btnViewLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLogActionPerformed
         OpenTodaysLog();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnViewLogActionPerformed
 
+    //Whenever the export data button is pressed
     private void btnExportDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportDataActionPerformed
         ExportData();
     }//GEN-LAST:event_btnExportDataActionPerformed
 
+    //Whenever the import data button is pressed
     private void btnImportDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportDataActionPerformed
         ImportData();
     }//GEN-LAST:event_btnImportDataActionPerformed
 
+    //Whenever the import data (read-only) button is pressed
     private void btnReadOnlyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadOnlyActionPerformed
         ReadOnly();
     }//GEN-LAST:event_btnReadOnlyActionPerformed
-
-    private void lstCampusesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstCampusesValueChanged
-        if (evt.getValueIsAdjusting())
-            return;
-        
-    }//GEN-LAST:event_lstCampusesValueChanged
 
     /**
      * @param args the command line arguments
@@ -561,13 +558,13 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     private javax.swing.JButton btnEditUser;
     private javax.swing.JButton btnExportData;
     private javax.swing.JButton btnImportData;
-    private javax.swing.JButton btnMenu;
     private javax.swing.JButton btnReadOnly;
+    private javax.swing.JButton btnRoleMenu;
     private javax.swing.JButton btnSaveAll;
     private javax.swing.JButton btnSimulate;
     private javax.swing.JButton btnUpdateMode;
+    private javax.swing.JButton btnViewLog;
     private javax.swing.JComboBox<String> cbxState;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -592,51 +589,63 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     
     
     private void RefreshCampusListModel() {
+        //Clear all the location lists right of and including campuses
         campusListModel.clear();
         buildingListModel.clear();
         floorListModel.clear();
         roomListModel.clear();
         roomDisplayListModel.clear();
         
+        //Add in each campus found in the data        
         Data.allCampuses.values().forEach((campus) -> {
             campusListModel.addElement(campus.GetName());
         });
     }
 
     private void RefreshBuildingListModel() {
+        //Clear all the location lists right of and including buildings
         buildingListModel.clear();
         floorListModel.clear();
         roomListModel.clear();
         roomDisplayListModel.clear();
         
+        //Find the currently selected campus
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
         
-        for(Building building : selectedCampus.GetAllChildren()){
+        //Add in each building found in the campus
+        for(Building building : selectedCampus.GetAllChildren()) {
             buildingListModel.addElement(building.GetName());
         }
     }
 
     private void RefreshFloorListModel() {
+        //Clear all the location lists right of and including floors
         floorListModel.clear();
         roomListModel.clear();
         roomDisplayListModel.clear();
         
+        //Find the currently selected building
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
         Building selectedBuilding = selectedCampus.GetChild(lstBuildings.getSelectedValue());
         
-        for(Floor floor : selectedBuilding.GetAllChildren()){
+        //Add in each floor found in the building
+        for(Floor floor : selectedBuilding.GetAllChildren()) {
             floorListModel.addElement(floor.GetFloorNumber());
         }
     }
 
     private void RefreshRoomListModel() {
+        //Clear all the location lists right of and including rooms
         roomListModel.clear();
         roomDisplayListModel.clear();
+        
+        //Find the currently selected Floofloor
         Campus selectedCampus = Data.allCampuses.get(lstCampuses.getSelectedValue());
         Building selectedBuilding = selectedCampus.GetChild(lstBuildings.getSelectedValue());
         Floor selectedFloor = selectedBuilding.GetChild(lstFloors.getSelectedValue());
         
-        for(Room room : selectedFloor.GetAllChildren()){
+        //Add in each room found in that floor
+        for(Room room : selectedFloor.GetAllChildren()) {
             roomDisplayListModel.addElement(selectedFloor.GetFloorNumber() + room.GetNumber() + " (" + room.GetRoomType() + ")");
             roomListModel.addElement(room.GetNumber());
         }
@@ -647,9 +656,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateStateDropdown() {
+        //Show "Mixed State" if the current location is in a mixed state
         if (selectedLocation.GetIsMixedState())
             cbxState.setSelectedIndex(-1);
         else
+            //Else select the correct index by comparing the names of all states
+            //to the selectedLocation's state
             for (int i = 0; i < locationStates.getSize(); i++) {
                 if (locationStates.getElementAt(i) == selectedLocation.GetState().GetName())
                     cbxState.getModel().setSelectedItem(selectedLocation.GetState().GetName());
@@ -694,13 +706,19 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void UpdateCurrentState() {
+        //Do nothing if no state is selected
         if (cbxState.getSelectedIndex() == -1)
             return;
         
+        //Find the state wanted to change to
         LocationState newState = LocationState.values()[cbxState.getSelectedIndex()];
         
+        //Ask the user for a reason for the state change
         UpdateReason dialog = new UpdateReason(this, true, selectedLocation.GetFullName(), newState);
         dialog.setVisible(true);
+        
+        //If a reason was successfully given update the currently selected location
+        //Else reset the state dropdown
         if(dialog.WasUpdatePressed()) {
             selectedLocation.SetRoomState(newState, dialog.GetReason());
         } else {
@@ -709,32 +727,44 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void NewChildLocation() {
-        if (selectedLocation instanceof Campus){
+        //If the currently selected location is a campus, add a building to it
+        if (selectedLocation instanceof Campus) {
+            //Open a new building dialog window
             NewBuilding dialog = new NewBuilding(this, true);
             dialog.setVisible(true);
+            
+            //If the window was successfully used
             if(dialog.WasCreatePressed()) {
                 ((Campus)selectedLocation).AddBuilding(dialog.GetName(), dialog.GetShortcode());
                 RefreshBuildingListModel();
             }
+            
+        //If the currently selected location is a building, add a floor to it
         } else if (selectedLocation instanceof Building) {
             ((Building)selectedLocation).AddFloor();
             RefreshFloorListModel();
+            
+        //If the currently selected location is a floor, add a room to it
         } else if (selectedLocation instanceof Floor) {
+            //Open a new room dialog window
             NewRoom dialog = new NewRoom(this, true);
             dialog.setVisible(true);
+            
+            //If the window was successfully used
             if(dialog.WasCreatePressed()) {
                 ((Floor)selectedLocation).AddRoom(dialog.GetType());
                 RefreshRoomListModel();
             }
-        } else {
-            
         }
     }
 
     private void NewCampusLocation() {
+        //Open a new campus dialog window
         NewCampus dialog = new NewCampus(this, true);
         dialog.setVisible(true);
-        if(dialog.WasCreatePressed()){
+        
+        //If the window is successfully used
+        if(dialog.WasCreatePressed()) {
             Data.allCampuses.put(dialog.GetName(), new Campus(dialog.GetName()));
             Log.Log("Added new Campus \"" + dialog.GetName() + "\"");
             RefreshCampusListModel();
@@ -742,6 +772,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void DeleteSelectedLocation() {
+        //Create the appropriate warning message
         String message = "Are you really sure you want to perminantly delete this location?"
                                     + "\nIt will not be recoverable";        
         if (selectedLocation instanceof Floor || selectedLocation instanceof Room)
@@ -750,33 +781,52 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             message += "!";
         
         String[] options = {"Yes, Delete It", "No, Save It", "Cancel"};
+        
+        //Show a option box asing is the user is sure
         switch (JOptionPane.showOptionDialog(this,
                             message,
                             "Delete this location?",
-                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.YES_NO_CANCEL_OPTION,//I like both no and cancel options even if they both do the same thing
                             JOptionPane.WARNING_MESSAGE,
                             null,
                             options,
-                            options[1])){
+                            options[1])) {
             default:
                 break;
+            //If the user confirms they do want to delete the selected location
             case 0:
-                if (selectedLocation instanceof Campus){
+                //If the selected location is a campus
+                if (selectedLocation instanceof Campus) {
                     Data.allCampuses.remove(((Campus)selectedLocation).GetName());
                     RefreshCampusListModel();
                     selectedLocation = null;
-                } else if (selectedLocation instanceof Building){
+                    
+                //If the selected location is a building
+                } else if (selectedLocation instanceof Building) {
+                    //Find the parent location
                     Campus parent = ((Building)selectedLocation).GetCampus();
+                    
+                    //Remove the unwanted location from the parent
                     parent.RemoveBuilding((Building)selectedLocation);
                     RefreshBuildingListModel();
                     selectedLocation = ((Building)selectedLocation).GetCampus();
-                } else if (selectedLocation instanceof Floor){
+                    
+                //If the selected location is a floor
+                } else if (selectedLocation instanceof Floor) {
+                    //Find the parent location
                     Building parent = ((Floor)selectedLocation).GetBuilding();
+                    
+                    //Remove the unwanted location from the parent
                     parent.RemoveFloor((Floor)selectedLocation);
                     RefreshFloorListModel();
                     selectedLocation = ((Floor)selectedLocation).GetBuilding();
+                    
+                //If the selected location is a room
                 } else {
+                    //Find the parent location
                     Floor parent = ((Room)selectedLocation).GetFloor();
+                    
+                    //Remove the unwanted location from the parent
                     parent.RemoveRoom((Room)selectedLocation);
                     RefreshRoomListModel();
                     selectedLocation = ((Room)selectedLocation).GetFloor();
@@ -787,10 +837,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void GenerateUserFilterMenu() {
+        //For every role, create a new JCheckBox and add it to the menu
         for (Role role : Role.values()) {
             JCheckBox cb = new JCheckBox(role.GetPluralName() + " ");
             cb.setSelected(true);
             cb.addActionListener((ActionEvent ae) -> {
+                //Make checking or unchecking the JCheckBox re-populate the user (keycard) list
                 PopulateUsers();
             });
             userFilterMenu.add(cb);
@@ -802,17 +854,24 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                //Show a Cconfirm dialog window confirming if the user wants to save
                 switch (JOptionPane.showConfirmDialog(thisFrame, 
                                     "Would you like to save all data before exiting?",
                                     "Save?", JOptionPane.YES_NO_CANCEL_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE)){
+                                    JOptionPane.QUESTION_MESSAGE)) {
+                    
+                    //If the user does want to save before exiting
                     case JOptionPane.YES_OPTION:
                         Data.SaveState(STATELOCATION, Data.allCampuses, Data.allKeycards);
                         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         break;
+                    
+                    //If the user wants to do nothing and NOT close the program
                     case JOptionPane.CANCEL_OPTION:
                         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
                         break;
+                    
+                    //If the user does NOT want to save before exiting
                     case JOptionPane.NO_OPTION:
                         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                         break;                        
@@ -822,45 +881,61 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void OpenUserFilterMenu() {
-        userFilterMenu.show(btnMenu, 0, 0
-                + btnMenu.getBounds().height);
+        userFilterMenu.show(btnRoleMenu, 0, 0 + btnRoleMenu.getBounds().height);
     }
 
     private void PopulateUsers() {
         SetUserControls(false);
         usersListModel.clear();
         usersDisplayListModel.clear();
+        
+        //Find all the role checkboxes in the role menu
         Component[] checkboxes = userFilterMenu.getComponents();
+        
+        //For each one that's enabled, add it to a list
         ArrayList<Role> enabledRoles = new ArrayList<>();
         for (int i = 0; i < checkboxes.length; i++) {
             if (((JCheckBox)checkboxes[i]).isSelected())
                 enabledRoles.add(Role.values()[i]);
         }
         
-        Data.allKeycards.values().stream()                
+        //Take all the keycards
+        Data.allKeycards.values().stream()
+            //Filter them by those that have an enabled role
             .filter(keycard -> FoundIntersection(keycard.GetRoles(), enabledRoles))
+            //Sort them alphabetically
             .sorted(Comparator.comparing(Keycard::GetName))
+            //And add them to both lists of keycards
             .forEachOrdered(keycard -> {
                 usersListModel.addElement(keycard);
                 usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRolesString(" / ") + ")");
-            });       
+            });  
+        
     }
     
-    private boolean FoundIntersection(Role[] roles1, ArrayList<Role> roles2){
+    private boolean FoundIntersection(Role[] roles1, ArrayList<Role> roles2) {
+        //Take all of the first given roles
         return Arrays.stream(roles1)
-                .distinct()
+                //Filter them by those which match any of the second given roles
                 .filter(r1 -> roles2.stream().anyMatch(r2 -> r2 == r1))
+                //Return if the result is greater than 0
                 .count() > 0;
-                
     }
 
     private void AddNewUser() {
+        //Show a new user dialog window
         NewUser dialog = new NewUser(this, true);
         dialog.setVisible(true);
-        if(dialog.WasCreatePressed()){
+        
+        //If the window is successfully used
+        if(dialog.WasCreatePressed()) {
+            //Create a new keycard with the details from the dialog window
             Keycard newKeycard = KeycardFactory.Create(dialog.GetRoles(), dialog.GetName());
+            
+            //Tell the logger
             Log.Log("Added new keycard: " + newKeycard.GetCardID() + " - "
                     + newKeycard.GetName() + " (" + newKeycard.GetRolesString(" / ") + ")");
+            
             PopulateUsers();
         }
     }
@@ -869,17 +944,22 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         String message = "Are you really sure you want to perminantly delete this user?"
                                     + "\nThey will not be recoverable!";
         String[] options = {"Yes, Delete Them", "No, Save Them", "Cancel"};
+        
+        //Show an option dialog to the user asking if they want to delete the selected user
         switch (JOptionPane.showOptionDialog(this,
                             message,
                             "Delete this user?",
-                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.YES_NO_CANCEL_OPTION,//I like both no and cancel options even if they both do the same thing
                             JOptionPane.WARNING_MESSAGE,
                             null,
                             options,
-                            options[1])){
+                            options[1])) {
             default:
                 break;
+            //If the user confirms they do want to delete the selected user
             case 0:
+                //Delete the user by finding it's ID by taking everything from the selected user
+                //before the first colon
                 Data.allKeycards.remove(lstUsers.getSelectedValue().split(":")[0]);
                 PopulateUsers();
                 break;
@@ -892,9 +972,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void EditSelectedUser() {
+        //Show an edit user (keycard) dialog to the user
         EditUser dialog = new EditUser(this, true, Data.allKeycards.get(lstUsers.getSelectedValue().split(":")[0]));
         dialog.setVisible(true);
-        if(dialog.WasUpdatePressed()){
+        
+        //If the dialog was successfully used
+        if(dialog.WasUpdatePressed()) {
             PopulateUsers();
         }
     }
@@ -913,17 +996,25 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private void ExportData() {
+        //Open a file chooser to ask the user for a location
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter(".state file", "state"));
+        
+        //If the user found a wanted location
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            //Find the wanted file location
             File file = new File(fileChooser.getSelectedFile().toString() + ".state");
+            
+            //Save the current state to that file location
             Data.SaveState(file.getPath(), Data.allCampuses, Data.allKeycards);
         }
     }
 
     private void ImportData() {
         String[] options = {"Yes, Overwrite all", "No, Open read-only version", "Cancel"};
+        
+        //Show an option dialog to the user to confirm they do want to overwrite the current state
         switch (JOptionPane.showOptionDialog(this, 
                             "This will overwrite ALL locations and keycards in the system.\n"
                                     + "Are you sure you want to do this?\n"
@@ -934,42 +1025,65 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                             JOptionPane.WARNING_MESSAGE,
                             null,
                             options,
-                            options[1])){
+                            options[1])) {
+            
+            //If the user confirms they want to overwrite the current state
             case JOptionPane.YES_OPTION:
+                //Open a file chooser to ask the user for a location
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setAcceptAllFileFilterUsed(false);
                 fileChooser.setFileFilter(new FileNameExtensionFilter(".state file", "state"));
+                
+                //If the user found a wanted location
                 if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    //Find the wanted file location
                     File file = new File(fileChooser.getSelectedFile().toString());
-                    if (Data.LoadState(file.getPath(), true) != null){
+                    
+                    //Load the data in that file. If it's successful
+                    if (Data.LoadState(file.getPath(), true) != null) {
                         RefreshCampusListModel();
                         PopulateUsers();
                     }
                 }
                 break;
+                
+            //If the user confirms they want to view a state but NOT overwrite the current data
             case JOptionPane.NO_OPTION:
                 ReadOnly();
                 break;
+                
+            //If the user confirms they want to do NOTHING
             default:
                 break;
         }
     }
 
     private void ReadOnly() {
+        //Open a file chooser to ask the user for a location
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter(".state file", "state"));
         fileChooser.setCurrentDirectory(new File("Emergency Logs"));
+        
+        //If the user found a wanted location
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            //Find the wanted path
             Path path = new File(fileChooser.getSelectedFile().toString()).toPath();
+            
+            //Find the title to display
+            //  If it's a program-generated state fire, include the parent directory
+            //  Else just have the file name
             String title;
             if (path.getName(path.getNameCount() - 2).toString().matches("EM_\\d\\d-\\d\\d-\\d\\d_\\d\\d-\\d\\d-\\d\\d"))
                 title = path.subpath(path.getNameCount() - 2, path.getNameCount()).toString();
             else
                 title = path.getFileName().toString();
+            
+            //Load the data into just a variable, not the whole program
             Data data = Data.LoadState(path.toString(), false);
             
-            if (data != null){
+            //If that's successful, open a view state dialog with it
+            if (data != null) {
                 ViewState dialog = new ViewState(this, true, data, title);
                 dialog.setVisible(true);
             }
@@ -977,8 +1091,12 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
     }
 
     private int CheckForDeselect(MouseEvent evt, int givenList) {
+        //If control is pressed, assume it's a de-selection so
+        //re-select the last selected index
         if (evt.isControlDown())
             ((JList)evt.getSource()).setSelectedIndex(givenList);
+        
+        //Else update the last selected index to this one
         else
             givenList = ((JList)evt.getSource()).getSelectedIndex();
         
