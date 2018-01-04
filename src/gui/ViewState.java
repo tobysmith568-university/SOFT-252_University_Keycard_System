@@ -231,7 +231,7 @@ public class ViewState extends javax.swing.JDialog {
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(() -> {
-            ViewState dialog = new ViewState(new javax.swing.JFrame(), true, Data.LoadState("Current.state", false), "Current.state");
+            ViewState dialog = new ViewState(new javax.swing.JFrame(), true, Data.ReadState("Current.state"), "Current.state");
             dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowClosing(java.awt.event.WindowEvent e) {

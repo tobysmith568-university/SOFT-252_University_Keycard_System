@@ -74,7 +74,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         userFilterMenu = new JPopupMenu();
         
         Log.Logger().AddLogObserver(this);
-        Data.LoadState(STATELOCATION, true);
+        Data.LoadState(STATELOCATION);
         
         UpdateLocationStates();
         
@@ -1040,7 +1040,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                     File file = new File(fileChooser.getSelectedFile().toString());
                     
                     //Load the data in that file. If it's successful
-                    if (Data.LoadState(file.getPath(), true) != null) {
+                    if (Data.LoadState(file.getPath()) != null) {
                         RefreshCampusListModel();
                         PopulateUsers();
                     }
@@ -1080,7 +1080,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                 title = path.getFileName().toString();
             
             //Load the data into just a variable, not the whole program
-            Data data = Data.LoadState(path.toString(), false);
+            Data data = Data.ReadState(path.toString());
             
             //If that's successful, open a view state dialog with it
             if (data != null) {
