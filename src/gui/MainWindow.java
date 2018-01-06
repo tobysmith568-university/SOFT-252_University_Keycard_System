@@ -74,7 +74,32 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
         userFilterMenu = new JPopupMenu();
         
         Log.Logger().AddLogObserver(this);
-        Data.LoadState(STATELOCATION);
+        if (Data.LoadState(STATELOCATION) == null) {
+            String[] options = {"Yes, load default data", "No, open with no data", "Cancel"};
+        
+            //Show an option dialog to the user to confirm if they want to load in the default data sets
+            switch (JOptionPane.showOptionDialog(this, 
+                                "No data can be found in the system!.\n"
+                                        + "\n"
+                                        + "Would you like to load in the default data sets?",
+                                "Load default data?",
+                                JOptionPane.YES_NO_CANCEL_OPTION,
+                                JOptionPane.WARNING_MESSAGE,
+                                null,
+                                options,
+                                options[0])) {
+                default:
+                    break;
+                //If the user confirms they do want to load in the default data sets
+                case 0:
+                    Data.SetDefaultState();
+                    break;
+                //If the user confirms they want to exit
+                case 2:
+                    dispose();
+                    break;
+            }
+        }
         
         UpdateLocationStates();
         
@@ -1039,7 +1064,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
                     //Find the wanted file location
                     File file = new File(fileChooser.getSelectedFile().toString());
                     
-                    //Load the data in that file. If it's successful
+                    //Load the data in that file, if it's successful
                     if (Data.LoadState(file.getPath()) != null) {
                         RefreshCampusListModel();
                         PopulateUsers();

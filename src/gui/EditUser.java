@@ -286,7 +286,7 @@ public class EditUser extends javax.swing.JDialog {
         }
         
         //Tell the logger
-        Log.Log("Updated user \"" + keycard.GetCardID() + " - " + oldName + " ("
+        Log.Log("Updated user \"" + keycard.GetCardID() + "\" - " + oldName + " ("
                 + oldRoles + ") to " + keycard.GetName() + " (" + keycard.GetRolesString(" / ") + ")");
         
         dispose();
