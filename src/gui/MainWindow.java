@@ -934,7 +934,7 @@ public class MainWindow extends javax.swing.JFrame implements ILogObserver{
             .forEachOrdered(keycard -> {
                 usersListModel.addElement(keycard);
                 usersDisplayListModel.addElement(keycard.GetCardID() + ": " + keycard.GetName() + " (" + keycard.GetRolesString(" / ") + ")");
-            });  
+            });//Take all the keycards
         
     }
     
