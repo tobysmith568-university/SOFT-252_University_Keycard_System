@@ -256,7 +256,7 @@ public class NewUser extends javax.swing.JDialog {
      * @return The name of the owner
      */
     public String GetName() {
-        return tbxName.getText();
+        return tbxName.getText().substring(0, 1).toUpperCase() + tbxName.getText().substring(1).toLowerCase();
     }
     
     /**

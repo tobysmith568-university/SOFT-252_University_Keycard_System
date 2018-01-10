@@ -270,8 +270,10 @@ public class EditUser extends javax.swing.JDialog {
         String oldName = keycard.GetName();
         String oldRoles = keycard.GetRolesString(" / ");
         
+        //Update the name of the keycard
+        keycard.SetName(tbxName.getText().substring(0, 1).toUpperCase() + tbxName.getText().substring(1).toLowerCase());
+        
         //Remove all the roles from the keycard
-        keycard.SetName(tbxName.getText());
         for (Role role : keycard.GetRoles()) {
             keycard.RemoveRole(role);
         }
